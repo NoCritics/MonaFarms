@@ -1,0 +1,9 @@
+{
+  "networkName": "monadTestnet",
+  "chainId": 10143,
+  "playerRegistry": "0x117f6cdF4f0a03A2fCA6e505D2b72ecec1eF3eDE",
+  "cropsToken": "0x9edD5162F5Cbc55Bd5d53342c996A44e3a753337",
+  "leaderboard": "0x2Cef48866f2490d3C9Dd5862072fF67405bA110f",
+  "farmManager": "0x5aCCeeD085c61cF12172E74969186814F2a984df",
+  "shopManager": "0xF3b09f381d98A1b40D4038f35C66f227C178Cb89"
+}
