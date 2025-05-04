@@ -1,0 +1,711 @@
+/* MonaFarms Components - Farm-specific elements with playful styling */
+
+/* === Player Component === */
+.player-card {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.player-card:after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(131, 88, 255, 0.2) 0%, transparent 70%);
+  z-index: -1;
+  opacity: 0.5;
+}
+
+.player-nickname {
+  font-size: var(--font-size-2xl);
+  font-family: 'VT323', monospace;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-highlight));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+  margin-bottom: var(--space-sm);
+}
+
+.player-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.player-stat {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  text-align: center;
+  transition: transform var(--transition-normal) ease;
+}
+
+.player-stat:hover {
+  transform: translateY(-2px);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.player-stat-value {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-highlight);
+  margin-bottom: var(--space-xs);
+}
+
+.player-stat-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.register-form {
+  max-width: 400px;
+  margin: var(--space-lg) auto;
+  padding: var(--space-lg);
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* === Crops Token Component === */
+.token-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.token-balance {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  margin: var(--space-md) 0;
+  color: var(--color-highlight);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.token-icon {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-highlight);
+  color: var(--color-background);
+  border-radius: var(--radius-full);
+  font-weight: bold;
+}
+
+.token-label {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+}
+
+.faucet-timer {
+  padding: var(--space-md);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  margin: var(--space-md) 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.timer-progress {
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-top: var(--space-xs);
+}
+
+.timer-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-highlight));
+  border-radius: var(--radius-full);
+  transition: width var(--transition-normal) ease;
+}
+
+.transfer-card {
+  margin-top: var(--space-lg);
+}
+
+/* === Farm Manager Component === */
+.farm-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.inventory-section {
+  margin-bottom: var(--space-lg);
+  padding: var(--space-md);
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--space-md);
+}
+
+.inventory-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-sm);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  transition: transform var(--transition-normal) ease;
+}
+
+.inventory-item:hover {
+  transform: translateY(-2px);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.inventory-icon {
+  font-size: 1.8rem;
+  margin-bottom: var(--space-xs);
+}
+
+.inventory-count {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.inventory-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+/* Farm tiles specific styling */
+.farm-grid-container {
+  margin-top: var(--space-lg);
+  padding: var(--space-md);
+  background-color: rgba(82, 61, 127, 0.2);
+  border-radius: var(--radius-lg);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+.farm-grid-container:before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+  z-index: -1;
+  opacity: 0.3;
+  border-radius: var(--radius-lg);
+}
+
+.tile-details {
+  margin-top: var(--space-lg);
+  padding: var(--space-md);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--color-accent);
+}
+
+.tile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.crop-potato {
+  color: var(--color-potato);
+}
+
+.crop-tomato {
+  color: var(--color-tomato);
+}
+
+.crop-strawberry {
+  color: var(--color-strawberry);
+}
+
+/* Growth display */
+.growth-progress {
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin: var(--space-sm) 0;
+}
+
+.growth-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-success));
+  border-radius: var(--radius-full);
+  transition: width var(--transition-normal) ease;
+}
+
+/* Water drop animation */
+@keyframes waterDrop {
+  0% { transform: translateY(-10px); opacity: 0; }
+  70% { opacity: 1; }
+  100% { transform: translateY(0); opacity: 0; }
+}
+
+.water-animation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--color-blue-light);
+  font-size: 24px;
+  opacity: 0;
+  animation: waterDrop 1s ease-in forwards;
+}
+
+/* Harvest shine animation */
+@keyframes harvestShine {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.harvest-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, var(--color-highlight) 0%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.harvesting .harvest-animation {
+  animation: harvestShine 0.6s ease-out forwards;
+}
+
+/* Fertilizer animation */
+@keyframes fertilizerSparkle {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+.fertilizer-sparkle {
+  position: absolute;
+  background-color: white;
+  border-radius: var(--radius-full);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fertilizing .farm-tile {
+  overflow: visible;
+}
+
+.fertilizing .farm-tile::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background: radial-gradient(circle, var(--color-soil-fertilized) 0%, transparent 70%);
+  z-index: -1;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* === Shop Manager Component === */
+.shop-container {
+  position: relative;
+}
+
+.shop-categories {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  overflow-x: auto;
+  padding-bottom: var(--space-sm);
+}
+
+.shop-category {
+  padding: var(--space-sm) var(--space-md);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast) ease;
+}
+
+.shop-category:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.shop-category.active {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: transform var(--transition-normal) ease, box-shadow var(--transition-normal) ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.product-image {
+  height: 120px;
+  background-color: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-image::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.2));
+}
+
+.product-details {
+  padding: var(--space-md);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-name {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+}
+
+.product-description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-md);
+  flex-grow: 1;
+}
+
+.product-price {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-weight: 700;
+  color: var(--color-highlight);
+  margin-bottom: var(--space-sm);
+}
+
+.price-icon {
+  color: var(--color-highlight);
+}
+
+.product-actions {
+  margin-top: auto;
+}
+
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+.quantity-btn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: bold;
+  transition: all var(--transition-fast) ease;
+}
+
+.quantity-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.quantity-input {
+  width: 50px;
+  text-align: center;
+  margin: 0 var(--space-xs);
+}
+
+/* Cooldown timer */
+.cooldown-timer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-sm);
+}
+
+.cooldown-icon {
+  color: var(--color-warning);
+}
+
+/* === Leaderboard Component === */
+.leaderboard-container {
+  position: relative;
+}
+
+.player-rank {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--color-highlight);
+  text-align: center;
+  margin: var(--space-md) 0;
+}
+
+.player-rank span {
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+}
+
+.rank-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-full);
+  margin-right: var(--space-sm);
+}
+
+.leaderboard-list {
+  margin-top: var(--space-lg);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  padding: var(--space-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background-color var(--transition-fast) ease;
+}
+
+.leaderboard-item:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.leaderboard-item:last-child {
+  border-bottom: none;
+}
+
+.leaderboard-rank {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-full);
+  margin-right: var(--space-md);
+  font-weight: 700;
+}
+
+.rank-1 {
+  background-color: var(--color-highlight);
+  color: var(--color-background);
+}
+
+.rank-2 {
+  background-color: #C0C0C0;
+  color: var(--color-background);
+}
+
+.rank-3 {
+  background-color: #CD7F32;
+  color: var(--color-background);
+}
+
+.leaderboard-address {
+  flex-grow: 1;
+  font-family: monospace;
+  font-size: var(--font-size-sm);
+}
+
+.leaderboard-points {
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+/* Top players podium */
+.podium-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 200px;
+  margin: var(--space-lg) 0;
+}
+
+.podium-place {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 var(--space-sm);
+}
+
+.podium-player {
+  margin-bottom: var(--space-sm);
+  text-align: center;
+}
+
+.podium-address {
+  font-family: monospace;
+  font-size: var(--font-size-xs);
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podium-points {
+  font-weight: 700;
+  color: var(--color-highlight);
+  margin-top: var(--space-xs);
+}
+
+.podium-block {
+  width: 80px;
+  background-color: var(--color-container);
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--font-size-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.podium-block::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+}
+
+.podium-block-1 {
+  height: 120px;
+  background-color: rgba(247, 181, 56, 0.2);
+}
+
+.podium-block-1::after {
+  background-color: var(--color-highlight);
+}
+
+.podium-block-2 {
+  height: 90px;
+  background-color: rgba(192, 192, 192, 0.2);
+}
+
+.podium-block-2::after {
+  background-color: #C0C0C0;
+}
+
+.podium-block-3 {
+  height: 60px;
+  background-color: rgba(205, 127, 50, 0.2);
+}
+
+.podium-block-3::after {
+  background-color: #CD7F32;
+}
+
+/* Star animation for top ranks */
+@keyframes starPulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+.star-icon {
+  color: var(--color-highlight);
+  margin-left: var(--space-xs);
+  animation: starPulse 2s infinite;
+}
+
+/* === Responsive Adjustments === */
+@media (max-width: 768px) {
+  .inventory-grid, .farm-grid, .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+  
+  .player-info {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .podium-container {
+    height: 160px;
+  }
+  
+  .podium-block {
+    width: 60px;
+  }
+  
+  .podium-block-1 { height: 100px; }
+  .podium-block-2 { height: 75px; }
+  .podium-block-3 { height: 50px; }
+}
+
+@media (max-width: 480px) {
+  .player-info {
+    grid-template-columns: 1fr;
+  }
+  
+  .inventory-grid, .farm-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tile-actions {
+    flex-direction: column;
+  }
+  
+  .tile-actions .btn {
+    width: 100%;
+  }
+}

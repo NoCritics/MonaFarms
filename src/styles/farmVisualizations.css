@@ -1,0 +1,355 @@
+/* Farm Visualization Styles - Enhanced interactive elements for farm tiles */
+
+/* Plant Container Styling */
+.plant-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  transition: transform 0.3s ease;
+}
+
+.plant-container:hover {
+  transform: scale(1.1);
+}
+
+/* Growth stages visualization */
+.growth-stage {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.growth-progress {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-success));
+  transition: width 1s ease;
+}
+
+/* Hexagonal grid adaptations */
+.hex-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 15px 5px;
+  margin: 20px 0;
+  padding: 10px;
+}
+
+.hex-grid .farm-tile {
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  margin-bottom: 10px;
+}
+
+.hex-grid .farm-tile.odd-row {
+  transform: translateX(50%);
+}
+
+.hex-grid .farm-tile:hover {
+  transform: translateY(-10px);
+  z-index: 10;
+}
+
+/* Tile hover effects */
+.farm-tile {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.farm-tile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.farm-tile:hover::before {
+  opacity: 1;
+}
+
+/* Tile Actions Area */
+.tile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.tile-actions .btn {
+  flex: 1;
+  min-width: 120px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.tile-actions .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Crop-specific styles */
+.crop-potato-icon {
+  color: var(--color-potato);
+}
+
+.crop-tomato-icon {
+  color: var(--color-tomato);
+}
+
+.crop-strawberry-icon {
+  color: var(--color-strawberry);
+}
+
+/* Empty farm state */
+.empty-farm {
+  padding: var(--space-xl);
+  text-align: center;
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  margin: var(--space-lg) 0;
+}
+
+.empty-farm .pulse-shadow {
+  display: inline-block;
+  margin: var(--space-md) 0;
+  padding: var(--space-md);
+  border-radius: var(--radius-full);
+  animation: pulse-shadow 2s infinite;
+}
+
+/* Tile details section */
+.tile-details {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-top: var(--space-lg);
+  border-left: 4px solid var(--color-accent);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tile-details:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.tile-crop-icon {
+  font-size: 2rem;
+  padding: var(--space-sm);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-full);
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Status badges */
+.status-badge {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+.badge-success {
+  background-color: var(--color-success);
+  color: white;
+}
+
+.badge-primary {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+.badge-warning {
+  background-color: var(--color-warning);
+  color: black;
+}
+
+/* Seed selection */
+.seed-type-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: var(--space-sm);
+  margin: var(--space-md) 0;
+}
+
+.seed-type-option {
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  background-color: rgba(255, 255, 255, 0.05);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.seed-type-option:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.seed-type-option.active {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+.seed-type-icon {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-xs);
+}
+
+.seed-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-md);
+  margin: var(--space-md) 0;
+  padding: var(--space-md);
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-md);
+}
+
+/* Inventory section */
+.inventory-section {
+  margin-bottom: var(--space-lg);
+  padding: var(--space-md);
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: var(--space-md);
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  overflow: hidden;
+  max-height: 120px;
+}
+
+.inventory-grid.expanded {
+  max-height: 500px;
+}
+
+.inventory-grid.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+.inventory-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-sm);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  transition: transform var(--transition-normal) ease;
+}
+
+.inventory-item:hover {
+  transform: translateY(-2px);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.inventory-icon {
+  font-size: 1.8rem;
+  margin-bottom: var(--space-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+}
+
+.inventory-count {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.inventory-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.inventory-details {
+  overflow: hidden;
+  transition: all 0.3s ease;
+  max-height: 0;
+  opacity: 0;
+}
+
+.expanded .inventory-details {
+  max-height: 500px;
+  opacity: 1;
+  margin-top: var(--space-md);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .farm-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: var(--space-sm);
+  }
+  
+  .inventory-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
+  
+  .seed-info {
+    grid-template-columns: 1fr;
+  }
+  
+  .tile-actions {
+    flex-direction: column;
+  }
+  
+  .tile-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .farm-grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: var(--space-xs);
+  }
+  
+  .hex-grid {
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+  }
+  
+  .farm-tile-number {
+    font-size: 0.6rem;
+  }
+  
+  .inventory-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .inventory-label {
+    font-size: 0.6rem;
+  }
+}
