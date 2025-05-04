@@ -35,4 +35,4 @@ Before playing, add the Monad testnet to your wallet (MetaMask/Rabby):
 - Different crops have different growth times and rewards
 - Water bucket purchases give you 6 charges
 - Fertilizer instantly matures crops
-- Check back daily for free tokens
+- Check back daily for free tokens!
