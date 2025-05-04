@@ -27,6 +27,8 @@ const CONTRACT_ADDRESSES = {
 };
 
 const ShopManagerComponent = () => {
+    // State for seasonal offers and bundles
+    const [showSpecialOffers, setShowSpecialOffers] = useState(true);
     const { address } = useAccount();
     const notification = useNotification();
     const { updateStats } = useProgress();
@@ -356,10 +358,89 @@ const ShopManagerComponent = () => {
                 </div>
             </div>
             
+            {/* Special offers banner */}
+            {showSpecialOffers && (
+                <div className="special-offers-banner" style={{
+                    background: 'linear-gradient(135deg, #8358FF, #F7B538)',
+                    borderRadius: '12px',
+                    padding: '1rem',
+                    marginBottom: '1.5rem',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    boxShadow: '0 4px 15px rgba(131, 88, 255, 0.3)'
+                }}>
+                    <button 
+                        style={{
+                            position: 'absolute',
+                            top: '8px',
+                            right: '8px',
+                            background: 'rgba(0,0,0,0.2)',
+                            border: 'none',
+                            color: 'white',
+                            borderRadius: '50%',
+                            width: '24px',
+                            height: '24px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            fontSize: '14px'
+                        }}
+                        onClick={() => setShowSpecialOffers(false)}
+                    >×</button>
+                    
+                    <div className="banner-content" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div className="banner-icon" style={{
+                            fontSize: '2.5rem',
+                            animation: 'pulse 2s infinite'
+                        }}>🌟</div>
+                        <div>
+                            <h3 style={{ margin: '0 0 0.5rem 0', color: 'white' }}>Spring Farming Bundle!</h3>
+                            <p style={{ margin: '0', color: 'rgba(255,255,255,0.9)' }}>Get 5 of each seed type + 2 water buckets for just 200 CROPS! Limited time offer.</p>
+                        </div>
+                        <button className="btn btn-highlight" style={{
+                            background: 'white',
+                            color: '#8358FF',
+                            border: 'none',
+                            borderRadius: '8px',
+                            padding: '0.5rem 1rem',
+                            fontWeight: 'bold',
+                            cursor: balance >= 200 ? 'pointer' : 'not-allowed',
+                            opacity: balance >= 200 ? 1 : 0.6,
+                            marginLeft: 'auto',
+                            transition: 'all 0.2s ease',
+                            boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                        }}>Purchase Bundle</button>
+                    </div>
+                    
+                    {/* Animated sparkles effect */}
+                    <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        pointerEvents: 'none',
+                        background: 'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 10%), radial-gradient(circle at 80% 70%, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 10%)'
+                    }}></div>
+                </div>
+            )}
+            
             <div className="shop-categories">
                 <button 
                     className={`shop-category-btn ${activeCategory === 'all' ? 'active' : ''}`}
                     onClick={() => setActiveCategory('all')}
+                    style={{
+                        padding: '0.5rem 1rem',
+                        background: activeCategory === 'all' ? '#8358FF' : '#523D7F',
+                        borderRadius: '8px',
+                        border: 'none',
+                        color: 'white',
+                        fontWeight: 'bold',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        boxShadow: activeCategory === 'all' ? '0 0 10px rgba(131, 88, 255, 0.5)' : 'none'
+                    }}
                 >
                     🛒 All Items
                 </button>
@@ -382,6 +463,85 @@ const ShopManagerComponent = () => {
                     🧑‍🌾 Farm Expansion
                 </button>
             </div>
+            
+            {/* Bundle Section - New for Phase 4 */}
+            {activeCategory === 'all' && showSpecialOffers && (
+                <div className="shop-section">
+                    <div className="shop-section-title" style={{
+                        fontSize: '1.5rem',
+                        color: '#F7B538',
+                        marginBottom: '1rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                    }}>
+                        <span className="shop-section-icon">🎁</span>
+                        Special Bundles
+                    </div>
+                    
+                    <div className="shop-grid">
+                        <div style={{
+                            background: 'linear-gradient(135deg, #2A1D48, #3D2A6D)',
+                            borderRadius: '12px',
+                            padding: '1.25rem',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+                            border: '2px solid #F7B538'
+                        }}>
+                            <div style={{ position: 'absolute', top: '10px', right: '-30px', background: '#F7B538', color: '#1E1633', padding: '4px 40px', transform: 'rotate(45deg)', fontSize: '0.7rem', fontWeight: 'bold' }}>BEST VALUE</div>
+                            
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                                <h3 style={{ margin: 0, color: '#F7B538' }}>Spring Starter Pack</h3>
+                                <div style={{ color: '#F7B538', fontWeight: 'bold' }}>💰 200</div>
+                            </div>
+                            
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', padding: '0.5rem', borderRadius: '8px', flexGrow: 1 }}>
+                                    <span>🥔</span>
+                                    <div>5 Potato Seeds</div>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', padding: '0.5rem', borderRadius: '8px', flexGrow: 1 }}>
+                                    <span>🍅</span>
+                                    <div>5 Tomato Seeds</div>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', padding: '0.5rem', borderRadius: '8px', flexGrow: 1 }}>
+                                    <span>🍓</span>
+                                    <div>5 Strawberry Seeds</div>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', padding: '0.5rem', borderRadius: '8px', flexGrow: 1 }}>
+                                    <span>💧</span>
+                                    <div>2 Water Buckets</div>
+                                </div>
+                            </div>
+                            
+                            <div style={{ background: 'rgba(247, 181, 56, 0.1)', padding: '0.5rem', borderRadius: '8px', marginBottom: '1rem' }}>
+                                <div style={{ color: '#F7B538', fontWeight: 'bold', marginBottom: '0.25rem' }}>You Save: 💰 80 CROPS</div>
+                                <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)' }}>Individual value: 280 CROPS</div>
+                            </div>
+                            
+                            <button style={{
+                                background: balance >= 200 ? 'linear-gradient(45deg, #F7B538, #FFA000)' : 'rgba(247, 181, 56, 0.3)',
+                                color: balance >= 200 ? '#1E1633' : 'rgba(255,255,255,0.5)',
+                                border: 'none',
+                                borderRadius: '8px',
+                                padding: '0.75rem',
+                                fontWeight: 'bold',
+                                cursor: balance >= 200 ? 'pointer' : 'not-allowed',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '0.5rem'
+                            }}>
+                                <span>🛒</span> Purchase Bundle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             
             {/* Seeds Section */}
             {(activeCategory === 'all' || activeCategory === 'seeds') && (

@@ -1,0 +1,57 @@
+/* Responsive Container Styles */
+
+.responsive-container {
+  position: relative;
+  box-sizing: border-box;
+  transition: width 0.3s ease-out;
+}
+
+/* Optimize for hardware acceleration */
+.responsive-container {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Breakpoint-specific styles */
+.responsive-container.breakpoint-xs {
+  padding: 0.5rem;
+}
+
+.responsive-container.breakpoint-sm {
+  padding: 0.75rem;
+}
+
+.responsive-container.breakpoint-md,
+.responsive-container.breakpoint-lg {
+  padding: 1rem;
+}
+
+.responsive-container.breakpoint-xl,
+.responsive-container.breakpoint-xxl {
+  padding: 1.5rem;
+}
+
+/* Print media optimization */
+@media print {
+  .responsive-container {
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+/* Low-end device optimization */
+@media (prefers-reduced-motion: reduce) {
+  .responsive-container {
+    transition: none !important;
+  }
+}
+
+/* Safari-specific fix for hardware acceleration issues */
+@media not all and (min-resolution:.001dpcm) { 
+  @supports (-webkit-appearance:none) {
+    .responsive-container {
+      -webkit-transform: translateZ(0);
+    }
+  }
+}

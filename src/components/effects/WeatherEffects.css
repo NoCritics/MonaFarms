@@ -1,0 +1,167 @@
+/* Weather Effects Styles */
+
+.weather-effects {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.weather-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.particles-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+/* Particle Styles */
+.weather-particle {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Rain Drops */
+.weather-particle.rain {
+  width: 1px;
+  height: 15px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.6));
+  border-radius: 0 0 1px 1px;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+  transform: rotate(15deg);
+}
+
+/* Cloud */
+.weather-particle.cloud {
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 
+    inset 0 0 20px rgba(255, 255, 255, 0.1),
+    0 0 15px rgba(255, 255, 255, 0.05);
+  filter: blur(10px);
+}
+
+/* Fog */
+.weather-particle.fog {
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  filter: blur(30px);
+}
+
+/* Sun Rays */
+.weather-particle.sunray {
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 215, 150, 0.4) 0%,
+    rgba(255, 215, 150, 0) 70%
+  );
+  filter: blur(8px);
+}
+
+/* Weather-specific container styles */
+.weather-effects.rain {
+  background-color: rgba(30, 22, 51, 0.1);
+}
+
+.weather-effects.cloudy {
+  background-color: rgba(58, 46, 92, 0.05);
+}
+
+.weather-effects.foggy {
+  background-color: rgba(19, 16, 34, 0.1);
+}
+
+/* Time of day modifiers */
+.weather-effects.dawn .weather-particle.sunray {
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 158, 108, 0.3) 0%,
+    rgba(255, 158, 108, 0) 70%
+  );
+}
+
+.weather-effects.dusk .weather-particle.sunray {
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 115, 115, 0.3) 0%,
+    rgba(255, 115, 115, 0) 70%
+  );
+}
+
+.weather-effects.night .weather-particle {
+  opacity: 0.7 !important;
+}
+
+/* Animation Keyframes */
+@keyframes rainFall {
+  0% {
+    transform: translateY(-20px) rotate(15deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(120vh) rotate(15deg);
+    opacity: 0;
+  }
+}
+
+@keyframes cloudDrift {
+  0% {
+    transform: translateX(-20%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes fogFloat {
+  0% {
+    transform: translateX(-10%) translateY(-5%);
+  }
+  100% {
+    transform: translateX(10%) translateY(5%);
+  }
+}
+
+@keyframes sunrays {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.05;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1.3) rotate(15deg);
+    opacity: 0.1;
+  }
+}
+
+/* Transition Animation */
+.weather-effects.transitioning .weather-overlay {
+  transition: all 3s ease-in-out;
+}
+
+.weather-effects.transitioning .weather-particle {
+  transition: opacity 2s ease-in-out;
+}

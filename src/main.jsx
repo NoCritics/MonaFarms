@@ -21,6 +21,9 @@ import './components/animations/animations.css';
 import './components/notifications/notifications.css';
 import './components/ui/ContextMenu.css';
 
+// Import Phase 4 styles
+import './styles/profile.css';
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Web3Provider>

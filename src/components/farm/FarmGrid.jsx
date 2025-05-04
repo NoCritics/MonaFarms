@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useAccount, useReadContract } from 'wagmi';
 import { useDragDrop } from '../ui/DragDropContext';
 import { DroppableTarget } from '../ui/DroppableTarget';
 import { ContextMenu } from '../ui/ContextMenu';
@@ -16,6 +17,10 @@ import {
   StrawberryPlant, 
   EmptyPlot,
 } from '../../assets/FarmIcons';
+
+const CONTRACT_ADDRESSES = {
+  farmManager: "0x5aCCeeD085c61cF12172E74969186814F2a984df",
+};
 
 const cropTypes = [
   { name: 'Potato', emoji: '🥔', component: PotatoPlant },
@@ -50,12 +55,96 @@ const FarmGrid = ({
   isFertilizing,
   onTileSelect
 }) => {
+  const { address } = useAccount();
   const [showAnimation, setShowAnimation] = useState(null);
   const [contextMenu, setContextMenu] = useState({ show: false, x: 0, y: 0, tileIndex: -1 });
   const { updateStats } = useProgress();
   
   // Track tile with ongoing animation
   const [animatingTile, setAnimatingTile] = useState(-1);
+  
+  // State to store all tiles info
+  const [allTilesInfo, setAllTilesInfo] = useState({});
+  
+  // Fetch info for all tiles
+  const fetchAllTilesInfo = async () => {
+    if (!address || tileCount <= 0) return;
+    
+    const tilesData = {};
+    
+    for (let i = 0; i < tileCount; i++) {
+      try {
+        const tileData = await useReadContract.fetch({
+          address: CONTRACT_ADDRESSES.farmManager,
+          abi: [
+            {
+              "inputs": [
+                {"internalType": "address", "name": "playerAddress", "type": "address"},
+                {"internalType": "uint8", "name": "tileIndex", "type": "uint8"}
+              ],
+              "name": "getTileInfo",
+              "outputs": [
+                {"internalType": "bool", "name": "exists", "type": "bool"},
+                {"internalType": "uint8", "name": "cropType", "type": "uint8"},
+                {"internalType": "uint256", "name": "plantedTime", "type": "uint256"},
+                {"internalType": "bool", "name": "isWatered", "type": "bool"},
+                {"internalType": "bool", "name": "cropExists", "type": "bool"},
+                {"internalType": "bool", "name": "isReady", "type": "bool"}
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            }
+          ],
+          functionName: 'getTileInfo',
+          args: [address, i],
+        });
+        
+        if (tileData) {
+          tilesData[i] = {
+            exists: tileData[0],
+            cropType: Number(tileData[1]),
+            plantedTime: Number(tileData[2]),
+            isWatered: tileData[3],
+            cropExists: tileData[4],
+            isReady: tileData[5]
+          };
+        }
+      } catch (error) {
+        console.error(`Error fetching info for tile ${i}:`, error);
+      }
+    }
+    
+    setAllTilesInfo(tilesData);
+  };
+  
+  // Initial fetch of all tiles info
+  useEffect(() => {
+    if (address && tileCount > 0) {
+      fetchAllTilesInfo();
+    }
+  }, [address, tileCount]);
+  
+  // Update all tiles info when selected tile info changes
+  useEffect(() => {
+    if (tileInfo && selectedTile >= 0) {
+      setAllTilesInfo(prev => ({
+        ...prev,
+        [selectedTile]: tileInfo
+      }));
+    }
+  }, [tileInfo, selectedTile]);
+  
+  // Refetch all tiles info after actions
+  useEffect(() => {
+    if (!isWatering && !isHarvesting && !isFertilizing && animatingTile === -1) {
+      // Action completed, refresh all tiles
+      const timer = setTimeout(() => {
+        fetchAllTilesInfo();
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isWatering, isHarvesting, isFertilizing, animatingTile]);
   
   // Event handler for right-click on tiles
   const handleContextMenu = (e, tileIndex) => {
@@ -87,12 +176,14 @@ const FarmGrid = ({
   
   // Generate tile target type for drag-and-drop
   const getTileTargetType = (tileIndex) => {
-    if (tileInfo && tileInfo.exists && selectedTile === tileIndex) {
-      if (!tileInfo.cropExists) {
+    const currentTileInfo = allTilesInfo[tileIndex] || (tileIndex === selectedTile ? tileInfo : null);
+    
+    if (currentTileInfo && currentTileInfo.exists) {
+      if (!currentTileInfo.cropExists) {
         return 'empty-tile';
-      } else if (!tileInfo.isWatered) {
+      } else if (!currentTileInfo.isWatered) {
         return 'planted-tile';
-      } else if (!tileInfo.isReady) {
+      } else if (!currentTileInfo.isReady) {
         return 'growing-tile';
       } else {
         return 'ready-tile';
@@ -104,21 +195,22 @@ const FarmGrid = ({
   // Get context menu actions based on tile state
   const getContextMenuActions = (tileIndex) => {
     const actions = [];
+    const currentTileInfo = allTilesInfo[tileIndex] || (tileIndex === selectedTile ? tileInfo : null);
     
-    if (tileInfo && tileInfo.exists && selectedTile === tileIndex) {
-      if (!tileInfo.cropExists) {
+    if (currentTileInfo && currentTileInfo.exists) {
+      if (!currentTileInfo.cropExists) {
         actions.push({
           icon: '🌱',
           label: 'Plant',
           onClick: () => {} // This would trigger the plant action
         });
-      } else if (!tileInfo.isWatered) {
+      } else if (!currentTileInfo.isWatered) {
         actions.push({
           icon: '💧',
           label: 'Water',
           onClick: () => {} // This would trigger the water action
         });
-      } else if (tileInfo.isReady) {
+      } else if (currentTileInfo.isReady) {
         actions.push({
           icon: '🌾',
           label: 'Harvest',
@@ -195,7 +287,8 @@ const FarmGrid = ({
           const isTileAnimating = animatingTile === i;
           const tileTargetType = getTileTargetType(i);
           
-          const currentTileInfo = isSelected && tileInfo;
+          // Get tile info either from allTilesInfo or tileInfo if this is the selected tile
+          const currentTileInfo = allTilesInfo[i] || (isSelected ? tileInfo : null);
           
           return (
             <DroppableTarget
