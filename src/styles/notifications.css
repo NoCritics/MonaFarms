@@ -1,0 +1,133 @@
+/* Notification System Styles */
+.notification-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: var(--z-tooltip);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  max-width: 350px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-right: var(--space-sm);
+}
+
+.notification {
+  display: flex;
+  align-items: center;
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  background-color: var(--color-container);
+  border-left: 4px solid;
+  margin-bottom: var(--space-sm);
+  animation: slide-in 0.3s ease forwards;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes progress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+.notification::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.3);
+  animation: progress linear forwards;
+}
+
+.notification-success {
+  border-left-color: var(--color-success);
+}
+.notification-success::after {
+  background-color: var(--color-success);
+}
+
+.notification-error {
+  border-left-color: var(--color-error);
+}
+.notification-error::after {
+  background-color: var(--color-error);
+}
+
+.notification-warning {
+  border-left-color: var(--color-warning);
+}
+.notification-warning::after {
+  background-color: var(--color-warning);
+}
+
+.notification-info {
+  border-left-color: var(--color-accent);
+}
+.notification-info::after {
+  background-color: var(--color-accent);
+}
+
+.notification-icon {
+  font-size: var(--font-size-xl);
+  margin-right: var(--space-md);
+  flex-shrink: 0;
+}
+
+.notification-content {
+  flex-grow: 1;
+  font-size: var(--font-size-md);
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xl);
+  line-height: 1;
+  padding: 0;
+  margin-left: var(--space-sm);
+  cursor: pointer;
+  transition: color var(--transition-fast) ease;
+}
+
+.notification-close:hover {
+  color: var(--color-text-primary);
+}
+
+/* Update animation durations based on notification duration */
+.notification[data-duration="3000"]::after {
+  animation-duration: 3s;
+}
+.notification[data-duration="5000"]::after {
+  animation-duration: 5s;
+}
+.notification[data-duration="7000"]::after {
+  animation-duration: 7s;
+}
+
+@media (max-width: 768px) {
+  .notification-container {
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+}

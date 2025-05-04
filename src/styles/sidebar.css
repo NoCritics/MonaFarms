@@ -1,0 +1,188 @@
+/* Sidebar styles for MonaFarms */
+.sidebar {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  bottom: 0;
+  width: 240px;
+  background-color: rgba(30, 22, 51, 0.85);
+  backdrop-filter: blur(8px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--space-md);
+  z-index: calc(var(--z-sticky) - 1);
+  transition: transform var(--transition-normal) ease, width var(--transition-normal) ease;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-md);
+}
+
+.sidebar-collapsed {
+  width: 60px;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  top: var(--space-md);
+  right: -12px;
+  width: 24px;
+  height: 24px;
+  background-color: var(--color-accent);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  box-shadow: var(--shadow-md);
+  transition: background-color var(--transition-fast) ease, transform var(--transition-fast) ease;
+  z-index: 2;
+}
+
+.sidebar-toggle:hover {
+  background-color: var(--color-highlight);
+  transform: scale(1.1);
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+  flex-grow: 1;
+}
+
+.resource-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: background-color var(--transition-fast) ease;
+}
+
+.resource-item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.resource-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.resource-info {
+  flex-grow: 1;
+}
+
+.resource-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.resource-value {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+}
+
+.sidebar-actions {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-collapsed .resource-item {
+  justify-content: center;
+  padding: var(--space-sm) 0;
+}
+
+.sidebar-collapsed .resource-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Main content adjustment with sidebar */
+.with-sidebar {
+  margin-left: 240px;
+  transition: margin-left var(--transition-normal) ease;
+}
+
+.with-sidebar.sidebar-collapsed {
+  margin-left: 60px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1023px) {
+  .sidebar {
+    transform: translateX(-100%);
+    width: 240px;
+  }
+  
+  .sidebar.visible {
+    transform: translateX(0);
+  }
+  
+  .with-sidebar {
+    margin-left: 0;
+  }
+  
+  .with-sidebar.sidebar-visible {
+    margin-left: 240px;
+  }
+  
+  .sidebar-toggle-mobile {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 24px;
+    height: 40px;
+    background-color: var(--color-accent);
+    color: white;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    box-shadow: var(--shadow-md);
+    z-index: var(--z-sticky);
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    top: 60px;
+    width: 280px;
+  }
+  
+  .with-sidebar.sidebar-visible {
+    margin-left: 0;
+  }
+  
+  /* Create an overlay when sidebar is visible on mobile */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: calc(var(--z-sticky) - 2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-normal) ease;
+  }
+  
+  .sidebar-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

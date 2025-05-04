@@ -1,0 +1,243 @@
+/* Skeleton Loader Styles */
+
+/* Base skeleton animation */
+@keyframes skeleton-pulse {
+  0% {
+    opacity: 0.6;
+    background-position: 0% 0%;
+  }
+  50% {
+    opacity: 0.3;
+    background-position: 100% 0%;
+  }
+  100% {
+    opacity: 0.6;
+    background-position: 0% 0%;
+  }
+}
+
+/* Common skeleton styles */
+.skeleton-loader {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(82, 61, 127, 0.1);
+  background: linear-gradient(
+    90deg,
+    rgba(82, 61, 127, 0.1) 25%,
+    rgba(131, 88, 255, 0.2) 50%,
+    rgba(82, 61, 127, 0.1) 75%
+  );
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  will-change: opacity, background-position;
+}
+
+/* Text line placeholder */
+.skeleton-text {
+  height: 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 2px;
+}
+
+/* Button placeholder */
+.skeleton-button {
+  height: 2.5rem;
+  width: 100%;
+  border-radius: 4px;
+}
+
+/* Avatar placeholder */
+.skeleton-avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+}
+
+/* Image placeholder */
+.skeleton-image {
+  width: 100%;
+  height: 10rem;
+  border-radius: 4px;
+}
+
+/* Card placeholder */
+.skeleton-card {
+  width: 100%;
+  border-radius: 8px;
+  background: rgba(30, 22, 51, 0.4);
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.skeleton-card-header {
+  margin-bottom: 1rem;
+}
+
+.skeleton-card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Farm tile placeholders */
+.skeleton-farm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.5rem;
+}
+
+.skeleton-farm-tile {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  background: rgba(30, 22, 51, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.skeleton-farm-tile-inner {
+  width: 80%;
+  height: 80%;
+  border-radius: 4px;
+}
+
+/* Stat placeholders */
+.skeleton-stat {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.skeleton-stat-label {
+  height: 0.8rem;
+  width: 40%;
+  margin-bottom: 0.5rem;
+  border-radius: 2px;
+}
+
+.skeleton-stat-value {
+  height: 1.2rem;
+  width: 70%;
+  border-radius: 2px;
+}
+
+/* Leaderboard row placeholders */
+.skeleton-leaderboard-row {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  background: rgba(30, 22, 51, 0.4);
+}
+
+.skeleton-lb-rank {
+  width: 2rem;
+  height: 1.5rem;
+  border-radius: 4px;
+  margin-right: 0.75rem;
+}
+
+.skeleton-lb-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  margin-right: 1rem;
+}
+
+.skeleton-lb-name {
+  flex: 1;
+  height: 1rem;
+  border-radius: 2px;
+  margin-right: 1rem;
+}
+
+.skeleton-lb-score {
+  width: 4rem;
+  height: 1rem;
+  border-radius: 2px;
+}
+
+/* Shop item placeholders */
+.skeleton-shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.skeleton-shop-item {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border-radius: 8px;
+  background: rgba(30, 22, 51, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.skeleton-shop-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+}
+
+.skeleton-shop-title {
+  height: 1rem;
+  width: 70%;
+  margin: 0 auto 0.5rem;
+  border-radius: 2px;
+}
+
+.skeleton-shop-price {
+  height: 1rem;
+  width: 40%;
+  margin: 0 auto 1rem;
+  border-radius: 2px;
+}
+
+.skeleton-shop-button {
+  height: 2.5rem;
+  width: 100%;
+  border-radius: 4px;
+}
+
+/* Optimization for hardware acceleration */
+.skeleton-loader,
+.skeleton-text,
+.skeleton-avatar,
+.skeleton-image,
+.skeleton-button,
+.skeleton-farm-tile,
+.skeleton-farm-tile-inner,
+.skeleton-stat-label,
+.skeleton-stat-value,
+.skeleton-lb-rank,
+.skeleton-lb-avatar,
+.skeleton-lb-name,
+.skeleton-lb-score,
+.skeleton-shop-icon,
+.skeleton-shop-title,
+.skeleton-shop-price,
+.skeleton-shop-button {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Fallback for browsers that don't support animations */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-loader {
+    animation: none;
+    background: rgba(82, 61, 127, 0.1);
+  }
+}
+
+/* Reduced motion preference accessibility support */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-loader {
+    animation-duration: 0s !important;
+  }
+}
