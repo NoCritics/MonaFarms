@@ -135,7 +135,7 @@ const FarmingBasicsSection = () => (
             <li>💧 You can water crops anytime between planting and harvesting</li>
             <li>⚡ Fertilizer instantly grows non-rare crops, bypassing water needs</li>
             <li>🏞️ You can have up to 24 farm tiles total</li>
-            <li>🌟 Only one rare crop can be grown at a time across all tiles</li>
+            <li>🌟 Only one rare crop of a particular type can be grown at a time across all tiles</li>
             <li>🌈 Rainbow Fruit prevents ANY other crops from being grown while active</li>
         </ul>
 

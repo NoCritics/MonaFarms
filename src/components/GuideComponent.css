@@ -232,6 +232,12 @@
     margin: 20px 0;
     position: relative;
     overflow: hidden;
+    color: #333;
+    font-weight: 500;
+}
+
+.info-box strong, .tip-box strong, .warning-box strong {
+    font-weight: 700;
 }
 
 .info-box {
@@ -254,6 +260,13 @@
     background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
     border: 2px solid #FDD835;
     box-shadow: 0 3px 10px rgba(255, 193, 7, 0.15);
+    color: #5D4037;
+    font-weight: 500;
+}
+
+.tip-box strong {
+    color: #D84315;
+    font-weight: 700;
 }
 
 .tip-box::before {
@@ -280,6 +293,10 @@
     transform: translateY(-50%);
     font-size: 60px;
     opacity: 0.1;
+}
+
+.warning-box strong {
+    color: #BF360C;
 }
 
 /* Farming Cycle */
@@ -827,6 +844,8 @@
     position: relative;
     transition: all 0.3s ease;
     overflow: hidden;
+    color: #333;
+    font-weight: 500;
 }
 
 .tip-card::before {
@@ -857,6 +876,16 @@
     font-weight: 600;
 }
 
+.tip-card ul {
+    margin-left: 15px;
+}
+
+.tip-card li {
+    color: #333;
+    margin-bottom: 8px;
+    position: relative;
+}
+
 /* Tool Strategy */
 .tool-strategy {
     background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
@@ -866,6 +895,8 @@
     border: 2px solid rgba(76, 175, 80, 0.2);
     position: relative;
     overflow: hidden;
+    color: #333;
+    font-weight: 500;
 }
 
 .tool-strategy::before {
@@ -885,17 +916,23 @@
     font-weight: 600;
 }
 
+.tool-strategy li {
+    color: #333;
+    margin-bottom: 8px;
+}
+
 /* Final Tips */
 .final-tips {
     background: 
-        linear-gradient(135deg, rgba(139, 195, 74, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%),
+        linear-gradient(135deg, rgba(139, 195, 74, 0.2) 0%, rgba(255, 193, 7, 0.2) 100%),
         url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><text x="20" y="40" font-size="30" opacity="0.05">🌾</text><text x="120" y="80" font-size="30" opacity="0.05">🌱</text><text x="60" y="120" font-size="30" opacity="0.05">🌻</text><text x="140" y="160" font-size="30" opacity="0.05">🌿</text></svg>');
     padding: 30px;
     border-radius: 12px;
     margin-top: 30px;
-    border: 2px solid rgba(139, 195, 74, 0.2);
+    border: 2px solid rgba(139, 195, 74, 0.4);
     position: relative;
     overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Animated background glow */
@@ -931,6 +968,14 @@
 
 .final-tips li {
     margin-bottom: 15px;
+    color: #333;
+    font-weight: 500;
+    position: relative;
+}
+
+.final-tips li strong {
+    color: #2E7D32;
+    font-weight: 700;
 }
 
 /* Additional Farm Theme Elements */
