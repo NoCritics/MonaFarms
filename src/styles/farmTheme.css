@@ -1,0 +1,400 @@
+/* MonaFarms Farm Theme Enhancements
+   Additional styling to give the entire site a cohesive farming atmosphere */
+
+/* === Enhanced Farm Theme Styling === */
+
+/* Navigation Tabs with Farm Theme */
+.nav-tabs {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(to bottom, rgba(36, 27, 56, 0.95), rgba(30, 21, 50, 0.95));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Farm field pattern for nav tabs */
+.nav-tabs::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    #4CAF50,
+    #4CAF50 20px,
+    #66BB6A 20px,
+    #66BB6A 40px
+  );
+  opacity: 0.3;
+}
+
+/* Enhanced nav tab styling */
+.nav-tab {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Hover grow effect */
+.nav-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #4CAF50, transparent);
+  transition: transform 0.3s ease;
+}
+
+.nav-tab:hover {
+  background: rgba(139, 195, 74, 0.1);
+  border-color: rgba(139, 195, 74, 0.3);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.nav-tab:hover::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* Active tab with farm theme */
+.nav-tab.active {
+  background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+  border-color: #4CAF50;
+  color: white;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.nav-tab.active::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  animation: rotate 10s linear infinite;
+}
+
+/* Animated nav icons */
+.nav-tab-icon {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.nav-tab:hover .nav-tab-icon {
+  transform: scale(1.2) rotate(10deg);
+}
+
+.nav-tab.active .nav-tab-icon {
+  animation: leafSway 3s ease-in-out infinite;
+}
+
+/* Welcome section farm decorations */
+.welcome-section {
+  position: relative;
+}
+
+/* Decorative farm elements */
+.welcome-section::before,
+.welcome-section::after {
+  content: '🌾';
+  position: absolute;
+  font-size: 3rem;
+  opacity: 0.1;
+  animation: sway 4s ease-in-out infinite;
+}
+
+.welcome-section::before {
+  top: 10px;
+  left: 20px;
+}
+
+.welcome-section::after {
+  bottom: 10px;
+  right: 20px;
+  animation-delay: -2s;
+}
+
+@keyframes sway {
+  0%, 100% { transform: rotate(-5deg) translateY(0); }
+  50% { transform: rotate(5deg) translateY(-10px); }
+}
+
+/* App container farm pattern overlay */
+.app-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 200px,
+      rgba(139, 195, 74, 0.01) 200px,
+      rgba(139, 195, 74, 0.01) 201px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 200px,
+      rgba(139, 195, 74, 0.01) 200px,
+      rgba(139, 195, 74, 0.01) 201px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Enhanced footer with farm theme */
+.footer {
+  border-top: 2px solid rgba(139, 195, 74, 0.2);
+  position: relative;
+  background: linear-gradient(to top, rgba(139, 195, 74, 0.05) 0%, transparent 100%);
+}
+
+/* Grass decoration */
+.footer::before {
+  content: '🌱 🌿 🌱 🌾 🌿';
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1rem;
+  opacity: 0.3;
+  letter-spacing: 20px;
+}
+
+/* Enhanced footer links */
+.footer-link {
+  position: relative;
+  transition: all 0.2s;
+}
+
+.footer-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #4CAF50, #66BB6A);
+  transition: width 0.3s ease;
+}
+
+.footer-link:hover {
+  color: #66BB6A;
+}
+
+.footer-link:hover::after {
+  width: 100%;
+}
+
+/* Enhanced cards with farm theme */
+.card.farm-themed {
+  background: linear-gradient(135deg, rgba(82, 61, 127, 0.95) 0%, rgba(30, 22, 51, 0.95) 100%);
+  border: 2px solid rgba(139, 195, 74, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.card.farm-themed::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #4CAF50 0%, #66BB6A 50%, #4CAF50 100%);
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Farm-themed buttons */
+.btn.farm-themed {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn.farm-themed::after {
+  content: '🌱';
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.btn.farm-themed:hover::after {
+  right: 10px;
+  opacity: 0.3;
+}
+
+/* Seasonal decorations */
+.seasonal-decoration {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1;
+  animation: float-by 30s linear infinite;
+}
+
+@keyframes float-by {
+  from {
+    transform: translateX(-100px) translateY(0) rotate(0deg);
+  }
+  to {
+    transform: translateX(calc(100vw + 100px)) translateY(-50px) rotate(360deg);
+  }
+}
+
+/* Add floating seeds */
+.app-container::after {
+  content: '🌱';
+  position: fixed;
+  top: 20%;
+  left: -50px;
+  font-size: 20px;
+  opacity: 0.1;
+  animation: float-by 25s linear infinite;
+  pointer-events: none;
+}
+
+/* Loading screen farm theme */
+.loading-overlay {
+  background: radial-gradient(circle at center, rgba(139, 195, 74, 0.1) 0%, rgba(30, 22, 51, 0.95) 100%);
+}
+
+/* Farm-themed progress bars */
+.progress-bar {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50 0%, #66BB6A 50%, #81C784 100%);
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+/* Tooltips with farm theme */
+.tooltip.farm-tooltip::before {
+  background: linear-gradient(135deg, #2E7D32 0%, #388E3C 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
+}
+
+/* Success notifications farm theme */
+.notification.success {
+  background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+  border-left: 4px solid #2E7D32;
+}
+
+.notification.success::before {
+  content: '🌱';
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  opacity: 0.3;
+}
+
+/* Enhance main content area */
+.main-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Add subtle animations to common elements */
+.animate-on-hover {
+  transition: all 0.3s ease;
+}
+
+.animate-on-hover:hover {
+  transform: translateY(-2px);
+}
+
+/* Farm grid enhancements */
+.farm-grid {
+  position: relative;
+  padding: 20px;
+  background: 
+    radial-gradient(ellipse at top left, rgba(139, 195, 74, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(255, 193, 7, 0.05) 0%, transparent 50%);
+  border-radius: 15px;
+}
+
+/* Enhanced inventory items */
+.inventory-item {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.inventory-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #4CAF50, transparent);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.inventory-item:hover::after {
+  transform: scaleX(1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .welcome-section::before,
+  .welcome-section::after,
+  .footer::before,
+  .app-container::after {
+    display: none;
+  }
+}
+
+/* Achievement celebration effects */
+@keyframes celebrate {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.achievement-unlocked {
+  animation: celebrate 0.5s ease-out;
+}
+
+/* Farm-specific color transitions */
+.transition-farm-colors {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
