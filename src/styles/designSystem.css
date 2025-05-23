@@ -263,6 +263,18 @@ a:hover {
   transition: all var(--transition-normal) ease;
 }
 
+/* Logo styling */
+.logo {
+  display: block;
+  height: 40px;
+  width: auto;
+  transition: transform var(--transition-normal) ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
 .nav-tabs {
   display: flex;
   gap: var(--space-md);
