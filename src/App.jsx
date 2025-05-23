@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ConnectKitButton } from "connectkit";
 import { useAccount } from "wagmi";
 
@@ -20,6 +20,9 @@ import GuideComponent from './components/GuideComponent';
 // Context providers
 import { DragDropProvider } from './components/ui/DragDropContext';
 import { ProgressProvider, useProgress } from './context/ProgressContext';
+
+// Import the logo
+import Logo from './art/Logo.png';
 
 const MainContent = () => {
     const { address, isConnected } = useAccount();
@@ -91,7 +94,7 @@ const MainContent = () => {
             <div className={`app-container ${sidebarVisible ? 'sidebar-visible' : ''}`}>
                 <div className={`navbar ${isScrolled ? 'shadow-md' : ''}`}>
                     <div className="flex items-center">
-                        <div className="logo text-2xl font-bold text-accent">MonaFarms</div>
+                        <img src={Logo} alt="MonaFarms" className="logo" style={{ height: '40px' }} />
                     </div>
                     
                     <ConnectKitButton 

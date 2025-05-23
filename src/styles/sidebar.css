@@ -1,7 +1,7 @@
 /* Sidebar styles for MonaFarms */
 .sidebar {
   position: fixed;
-  top: 70px;
+  top: 80px;
   left: 0;
   bottom: 0;
   width: 240px;
@@ -154,7 +154,7 @@
   
   .sidebar-toggle-mobile {
     position: fixed;
-    top: 70px;
+    top: 76px;
     left: 0;
     width: 24px;
     height: 40px;
@@ -173,7 +173,7 @@
 
 @media (max-width: 768px) {
   .sidebar {
-    top: 60px;
+    top: 76px;
     width: 280px;
   }
   

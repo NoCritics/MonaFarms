@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Logo from '../../art/Logo.png';
 
 // Define shimmer animation style
 const shimmerAnimation = `
@@ -102,10 +103,7 @@ const LoadingScreen = ({ isLoading, minDisplayTime = 1500 }) => {
       <div className={`loading-screen ${fadeOut ? 'fade-out' : ''}`}>
       <div className="loading-content">
         <div className="logo-container">
-          <div className="logo">
-            <span className="logo-text">MonaFarms</span>
-            <div className="logo-icon">🌱</div>
-          </div>
+          <img src={Logo} alt="MonaFarms" className="loading-logo" />
         </div>
         
         <div className="loading-progress-container" style={{ 
