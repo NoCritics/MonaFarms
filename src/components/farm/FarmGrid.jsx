@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useAccount, useReadContract } from 'wagmi';
+import React, { useState, useEffect } from 'react';
+import { useAccount } from 'wagmi';
 import { useDragDrop } from '../ui/DragDropContext';
 import { DroppableTarget } from '../ui/DroppableTarget';
 import { ContextMenu } from '../ui/ContextMenu';
@@ -16,29 +16,57 @@ import {
   PotatoPlant, 
   StrawberryPlant, 
   EmptyPlot,
+  CornPlant,
+  CarrotPlant,
+  PumpkinPlant,
+  WheatPlant,
+  WatermelonPlant,
+  CactusPlant,
+  GoldenPlant,
+  CrystalBerriesPlant,
+  MoonflowersPlant,
+  AncientGrainPlant,
+  RainbowFruitPlant
 } from '../../assets/FarmIcons';
 
-const CONTRACT_ADDRESSES = {
-  farmManager: "0x5aCCeeD085c61cF12172E74969186814F2a984df",
+import { Fertilizer, WaterBucket, SeedPacket } from '../../assets/FarmIcons';
+
+// Define crop components map
+const cropComponentMap = {
+  0: PotatoPlant,      // POTATO
+  1: TomatoPlant,      // TOMATO
+  2: StrawberryPlant,  // STRAWBERRY
+  3: CornPlant,        // CORN
+  4: CarrotPlant,      // CARROT
+  5: PumpkinPlant,     // PUMPKIN
+  6: WheatPlant,       // WHEAT
+  7: WatermelonPlant,  // WATERMELON
+  8: CactusPlant,      // CACTUS
+  9: GoldenPlant,      // GOLDEN_PLANT_CROP
+  10: CrystalBerriesPlant, // CRYSTAL_BERRIES
+  11: MoonflowersPlant,    // MOONFLOWERS
+  12: AncientGrainPlant,   // ANCIENT_GRAIN
+  13: RainbowFruitPlant    // RAINBOW_FRUIT
 };
 
-const cropTypes = [
-  { name: 'Potato', emoji: '🥔', component: PotatoPlant },
-  { name: 'Tomato', emoji: '🍅', component: TomatoPlant },
-  { name: 'Strawberry', emoji: '🍓', component: StrawberryPlant }
-];
+// Fallback to existing components for those that haven't been created yet
+const getFallbackComponent = (cropId) => {
+  const index = cropId % 3;
+  const crops = [PotatoPlant, TomatoPlant, StrawberryPlant];
+  return crops[index];
+};
 
-const getGrowthStage = (isPlanted, isWatered, isReady, plantedTime, growthTime) => {
-  if (!isPlanted) return 0;
+const getGrowthStage = (isEmpty, waterCount, isFertilized, isReady, plantedAt, maturityTime, currentTime) => {
+  if (isEmpty) return 0;
   
   if (isReady) return 3;
   
-  if (!isWatered) return 1;
+  if (waterCount === 0 && !isFertilized) return 1;
   
   // Calculate growth percentage
-  const currentTime = Math.floor(Date.now() / 1000);
-  const timePassed = currentTime - plantedTime;
-  const percentComplete = Math.min(100, (timePassed / growthTime) * 100);
+  const timePassed = currentTime - plantedAt;
+  const growthDuration = maturityTime - plantedAt;
+  const percentComplete = growthDuration > 0 ? Math.min(100, (timePassed / growthDuration) * 100) : 0;
   
   if (percentComplete < 50) return 1;
   return 2;
@@ -49,11 +77,14 @@ const FarmGrid = ({
   setSelectedTile,
   tileInfo,
   tileCount,
-  cropConfigs,
+  farmTiles,
   isWatering,
   isHarvesting,
   isFertilizing,
-  onTileSelect
+  isPlanting,
+  onTileSelect,
+  getCropEmojiFromId,
+  currentTime
 }) => {
   const { address } = useAccount();
   const [showAnimation, setShowAnimation] = useState(null);
@@ -63,88 +94,10 @@ const FarmGrid = ({
   // Track tile with ongoing animation
   const [animatingTile, setAnimatingTile] = useState(-1);
   
-  // State to store all tiles info
-  const [allTilesInfo, setAllTilesInfo] = useState({});
-  
-  // Fetch info for all tiles
-  const fetchAllTilesInfo = async () => {
-    if (!address || tileCount <= 0) return;
-    
-    const tilesData = {};
-    
-    for (let i = 0; i < tileCount; i++) {
-      try {
-        const tileData = await useReadContract.fetch({
-          address: CONTRACT_ADDRESSES.farmManager,
-          abi: [
-            {
-              "inputs": [
-                {"internalType": "address", "name": "playerAddress", "type": "address"},
-                {"internalType": "uint8", "name": "tileIndex", "type": "uint8"}
-              ],
-              "name": "getTileInfo",
-              "outputs": [
-                {"internalType": "bool", "name": "exists", "type": "bool"},
-                {"internalType": "uint8", "name": "cropType", "type": "uint8"},
-                {"internalType": "uint256", "name": "plantedTime", "type": "uint256"},
-                {"internalType": "bool", "name": "isWatered", "type": "bool"},
-                {"internalType": "bool", "name": "cropExists", "type": "bool"},
-                {"internalType": "bool", "name": "isReady", "type": "bool"}
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            }
-          ],
-          functionName: 'getTileInfo',
-          args: [address, i],
-        });
-        
-        if (tileData) {
-          tilesData[i] = {
-            exists: tileData[0],
-            cropType: Number(tileData[1]),
-            plantedTime: Number(tileData[2]),
-            isWatered: tileData[3],
-            cropExists: tileData[4],
-            isReady: tileData[5]
-          };
-        }
-      } catch (error) {
-        console.error(`Error fetching info for tile ${i}:`, error);
-      }
-    }
-    
-    setAllTilesInfo(tilesData);
-  };
-  
-  // Initial fetch of all tiles info
+  // Clear context menu when selected tile changes
   useEffect(() => {
-    if (address && tileCount > 0) {
-      fetchAllTilesInfo();
-    }
-  }, [address, tileCount]);
-  
-  // Update all tiles info when selected tile info changes
-  useEffect(() => {
-    if (tileInfo && selectedTile >= 0) {
-      setAllTilesInfo(prev => ({
-        ...prev,
-        [selectedTile]: tileInfo
-      }));
-    }
-  }, [tileInfo, selectedTile]);
-  
-  // Refetch all tiles info after actions
-  useEffect(() => {
-    if (!isWatering && !isHarvesting && !isFertilizing && animatingTile === -1) {
-      // Action completed, refresh all tiles
-      const timer = setTimeout(() => {
-        fetchAllTilesInfo();
-      }, 1000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [isWatering, isHarvesting, isFertilizing, animatingTile]);
+    setContextMenu(prev => ({ ...prev, show: false }));
+  }, [selectedTile]);
   
   // Event handler for right-click on tiles
   const handleContextMenu = (e, tileIndex) => {
@@ -162,11 +115,6 @@ const FarmGrid = ({
     });
   };
   
-  // Clear context menu when selected tile changes
-  useEffect(() => {
-    setContextMenu(prev => ({ ...prev, show: false }));
-  }, [selectedTile]);
-  
   // Set up the drag-and-drop handler
   const handleDrop = (item, targetTileIndex) => {
     console.log(`Dropped ${item} on tile ${targetTileIndex}`);
@@ -176,49 +124,50 @@ const FarmGrid = ({
   
   // Generate tile target type for drag-and-drop
   const getTileTargetType = (tileIndex) => {
-    const currentTileInfo = allTilesInfo[tileIndex] || (tileIndex === selectedTile ? tileInfo : null);
+    const tile = farmTiles.find(t => t.index === tileIndex);
     
-    if (currentTileInfo && currentTileInfo.exists) {
-      if (!currentTileInfo.cropExists) {
+    if (tile) {
+      if (tile.isEmpty) {
         return 'empty-tile';
-      } else if (!currentTileInfo.isWatered) {
+      } else if (tile.waterCount === 0) {
         return 'planted-tile';
-      } else if (!currentTileInfo.isReady) {
+      } else if (!tile.isReady) {
         return 'growing-tile';
       } else {
         return 'ready-tile';
       }
     }
+    
     return 'unknown-tile';
   };
   
   // Get context menu actions based on tile state
   const getContextMenuActions = (tileIndex) => {
     const actions = [];
-    const currentTileInfo = allTilesInfo[tileIndex] || (tileIndex === selectedTile ? tileInfo : null);
+    const tile = farmTiles.find(t => t.index === tileIndex);
     
-    if (currentTileInfo && currentTileInfo.exists) {
-      if (!currentTileInfo.cropExists) {
+    if (tile) {
+      if (tile.isEmpty) {
         actions.push({
-          icon: '🌱',
+          icon: <SeedPacket cropType={0} size={16} />,
           label: 'Plant',
           onClick: () => {} // This would trigger the plant action
         });
-      } else if (!currentTileInfo.isWatered) {
+      } else if (tile.waterCount === 0 && !tile.isFertilized) {
         actions.push({
-          icon: '💧',
+          icon: <WaterBucket size={16} />,
           label: 'Water',
           onClick: () => {} // This would trigger the water action
         });
-      } else if (currentTileInfo.isReady) {
+      } else if (tile.isReady) {
         actions.push({
-          icon: '🌾',
+          icon: '✓',
           label: 'Harvest',
           onClick: () => {} // This would trigger the harvest action
         });
-      } else {
+      } else if (!tile.isFertilized) {
         actions.push({
-          icon: '🧪',
+          icon: <Fertilizer size={16} />,
           label: 'Fertilize',
           onClick: () => {} // This would trigger the fertilize action
         });
@@ -238,12 +187,12 @@ const FarmGrid = ({
       updateStats(prev => ({ 
         waterBucketsUsed: prev.waterBucketsUsed + 1 
       }));
-    } else if (isHarvesting) {
+    } else if (isHarvesting && tileInfo) {
       updateStats(prev => ({ 
         cropsHarvested: prev.cropsHarvested + 1,
-        ...(tileInfo?.cropType === 0 ? { potatoesHarvested: prev.potatoesHarvested + 1 } : {}),
-        ...(tileInfo?.cropType === 1 ? { tomatoesHarvested: prev.tomatoesHarvested + 1 } : {}),
-        ...(tileInfo?.cropType === 2 ? { strawberriesHarvested: prev.strawberriesHarvested + 1 } : {})
+        ...(tileInfo.plantedCrop === 0 ? { potatoesHarvested: prev.potatoesHarvested + 1 } : {}),
+        ...(tileInfo.plantedCrop === 1 ? { tomatoesHarvested: prev.tomatoesHarvested + 1 } : {}),
+        ...(tileInfo.plantedCrop === 2 ? { strawberriesHarvested: prev.strawberriesHarvested + 1 } : {})
       }));
     }
   };
@@ -259,8 +208,11 @@ const FarmGrid = ({
     } else if (isFertilizing && animatingTile === -1) {
       setShowAnimation('fertilizing');
       setAnimatingTile(selectedTile);
+    } else if (isPlanting && animatingTile === -1) {
+      setShowAnimation('planting');
+      setAnimatingTile(selectedTile);
     }
-  }, [isWatering, isHarvesting, isFertilizing, selectedTile, animatingTile]);
+  }, [isWatering, isHarvesting, isFertilizing, isPlanting, selectedTile, animatingTile]);
   
   if (tileCount === 0) {
     return (
@@ -287,8 +239,18 @@ const FarmGrid = ({
           const isTileAnimating = animatingTile === i;
           const tileTargetType = getTileTargetType(i);
           
-          // Get tile info either from allTilesInfo or tileInfo if this is the selected tile
-          const currentTileInfo = allTilesInfo[i] || (isSelected ? tileInfo : null);
+          // Get tile info either from farmTiles or tileInfo if this is the selected tile
+          const tile = farmTiles.find(t => t.index === i) || 
+                     (isSelected && tileInfo ? {
+                        index: i,
+                        plantedCrop: tileInfo.plantedCrop,
+                        plantedAt: tileInfo.plantedAt,
+                        waterCount: tileInfo.waterCount,
+                        isFertilized: tileInfo.isFertilized,
+                        maturityTime: tileInfo.maturityTime,
+                        isEmpty: tileInfo.isEmpty,
+                        isReady: tileInfo.isReady
+                     } : null);
           
           return (
             <DroppableTarget
@@ -296,7 +258,7 @@ const FarmGrid = ({
               targetType={tileTargetType}
               targetData={i}
               onDrop={handleDrop}
-              className={`farm-tile ${isSelected ? 'selected' : ''} ${isTileAnimating && isWatering ? 'watering' : ''} ${isTileAnimating && isHarvesting ? 'harvesting' : ''} ${isTileAnimating && isFertilizing ? 'fertilizing' : ''}`}
+              className={`farm-tile ${isSelected ? 'selected' : ''} ${isTileAnimating && isWatering ? 'watering' : ''} ${isTileAnimating && isHarvesting ? 'harvesting' : ''} ${isTileAnimating && isFertilizing ? 'fertilizing' : ''} ${isTileAnimating && isPlanting ? 'planting' : ''}`}
             >
               <div 
                 className="farm-tile-inner"
@@ -305,30 +267,40 @@ const FarmGrid = ({
               >
                 <div className="farm-tile-number">{i + 1}</div>
                 
-                {currentTileInfo && currentTileInfo.cropExists && (
+                {tile && !tile.isEmpty ? (
                   <>
                     {(() => {
-                      const cropConfig = cropConfigs[currentTileInfo.cropType];
-                      const growthTime = cropConfig ? cropConfig.growthTime : 3600;
                       const stage = getGrowthStage(
-                        currentTileInfo.cropExists,
-                        currentTileInfo.isWatered,
-                        currentTileInfo.isReady,
-                        currentTileInfo.plantedTime,
-                        growthTime
+                        tile.isEmpty,
+                        tile.waterCount,
+                        tile.isFertilized,
+                        tile.isReady,
+                        tile.plantedAt,
+                        tile.maturityTime,
+                        currentTime
                       );
                       
-                      const CropComponent = cropTypes[currentTileInfo.cropType].component;
+                      const cropId = tile.plantedCrop;
+                      const CropComponent = cropComponentMap[cropId] || getFallbackComponent(cropId);
                       return <CropComponent stage={stage} size={40} />;
                     })()}
                     
                     <div 
-                      className={`farm-tile-status ${currentTileInfo.isReady ? 'ready' : currentTileInfo.isWatered ? 'growing' : 'empty'}`}
-                    ></div>
+                      className={`farm-tile-status ${tile.isReady ? 'ready' : (tile.waterCount > 0 || tile.isFertilized) ? 'growing' : 'planted'}`}
+                    >
+                      {tile.isReady ? 
+                        '✓' : 
+                        <SeedPacket cropType={tile.plantedCrop} size={16} />}
+                      {!tile.isReady && (tile.waterCount > 0 || tile.isFertilized) && 
+                        <div className="status-indicator">
+                          {tile.isFertilized ? 
+                            <div className="indicator fertilizer-indicator"></div> : 
+                            <div className="indicator water-indicator"></div>}
+                        </div>
+                      }
+                    </div>
                   </>
-                )}
-                
-                {(!currentTileInfo || !currentTileInfo.cropExists) && (
+                ) : (
                   <EmptyPlot size={40} />
                 )}
                 
@@ -340,12 +312,15 @@ const FarmGrid = ({
                     )}
                     {showAnimation === 'harvesting' && (
                       <HarvestAnimation 
-                        cropType={currentTileInfo?.cropType || 0} 
+                        cropType={tile?.plantedCrop || 0} 
                         onComplete={handleAnimationComplete} 
                       />
                     )}
                     {showAnimation === 'fertilizing' && (
                       <FertilizerAnimation onComplete={handleAnimationComplete} />
+                    )}
+                    {showAnimation === 'planting' && (
+                      <PlantAnimation onComplete={handleAnimationComplete} />
                     )}
                   </div>
                 )}

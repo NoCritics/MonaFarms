@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
-import { formatEther } from 'viem';
-import CropsTokenABI from '../../contracts/abis/cropstoken-abi.json';
-import FarmManagerABI from '../../contracts/abis/farmmanager-abi.json';
-import { CropsToken, WaterBucket, Fertilizer, SeedPacket } from '../assets/FarmIcons';
+import { formatEther, formatUnits } from 'viem';
+import CROPS_TokenABI from '../abis/CROPS_Token.abi.json';
+import FarmManagerABI from '../abis/FarmManager.abi.json';
+import PlayerRegistryInventoryABI from '../abis/PlayerRegistryInventory.abi.json';
+import { CONTRACT_ADDRESSES } from '../constants/contractAddresses';
+import { CropsToken, WaterBucket, Fertilizer, SeedPacket } from '../assets/ItemImages';
 
-const CONTRACT_ADDRESSES = {
-    cropsToken: "0x9edD5162F5Cbc55Bd5d53342c996A44e3a753337",
-    farmManager: "0x5aCCeeD085c61cF12172E74969186814F2a984df",
+// ItemID enum values
+const ITEM_IDS = {
+    CROPS_CURRENCY: 0,
+    WATER_BUCKET: 1,
+    FERTILIZER: 2,
+    POTATO_SEED: 8,
+    TOMATO_SEED: 9,
+    STRAWBERRY_SEED: 10
 };
 
 const Sidebar = () => {
@@ -23,21 +30,37 @@ const Sidebar = () => {
     });
     const [resourceAnimations, setResourceAnimations] = useState({});
     const [prevResources, setPrevResources] = useState(null);
+    const [tokenDecimals, setTokenDecimals] = useState(18);
+
+    // Get token decimals
+    const { data: decimalsData } = useReadContract({
+        address: CONTRACT_ADDRESSES.CROPS_Token,
+        abi: CROPS_TokenABI,
+        functionName: 'decimals',
+        enabled: !!address,
+    });
+
+    // Set token decimals when data is received
+    useEffect(() => {
+        if (decimalsData !== undefined) {
+            setTokenDecimals(Number(decimalsData));
+        }
+    }, [decimalsData]);
 
     // Get token balance
     const { data: tokenBalance, refetch: refetchBalance } = useReadContract({
-        address: CONTRACT_ADDRESSES.cropsToken,
-        abi: CropsTokenABI,
+        address: CONTRACT_ADDRESSES.CROPS_Token,
+        abi: CROPS_TokenABI,
         functionName: 'balanceOf',
         args: [address],
         enabled: !!address,
     });
 
-    // Get inventory
+    // Get inventory from PlayerRegistryInventory instead of FarmManager
     const { data: inventoryData, refetch: refetchInventory } = useReadContract({
-        address: CONTRACT_ADDRESSES.farmManager,
-        abi: FarmManagerABI,
-        functionName: 'getPlayerInventory',
+        address: CONTRACT_ADDRESSES.PlayerRegistryInventory,
+        abi: PlayerRegistryInventoryABI,
+        functionName: 'getPlayerFullInventory',
         args: [address],
         enabled: !!address,
     });
@@ -54,23 +77,30 @@ const Sidebar = () => {
 
     // Update resources state when data changes
     useEffect(() => {
-        if (tokenBalance) {
-            const newBalance = Number(formatEther(tokenBalance));
+        if (tokenBalance && decimalsData) {
+            const newBalance = Number(formatUnits(tokenBalance, tokenDecimals));
             setResources(prev => ({ ...prev, balance: newBalance }));
         }
         
         if (inventoryData) {
+            // inventoryData is an array of two arrays: [itemIds[], amounts[]]
+            const inventoryObj = {};
+            inventoryData[0].forEach((id, index) => {
+                inventoryObj[Number(id)] = Number(inventoryData[1][index]);
+            });
+
+            // Update resources based on the inventoryObj
             const newResources = {
-                potatoes: Number(inventoryData[0]),
-                tomatoes: Number(inventoryData[1]),
-                strawberries: Number(inventoryData[2]),
-                water: Number(inventoryData[3]),
-                fertilizer: Number(inventoryData[4])
+                potatoes: inventoryObj[ITEM_IDS.POTATO_SEED] || 0,
+                tomatoes: inventoryObj[ITEM_IDS.TOMATO_SEED] || 0,
+                strawberries: inventoryObj[ITEM_IDS.STRAWBERRY_SEED] || 0,
+                water: inventoryObj[ITEM_IDS.WATER_BUCKET] || 0,
+                fertilizer: inventoryObj[ITEM_IDS.FERTILIZER] || 0
             };
             
             setResources(prev => ({ ...prev, ...newResources }));
         }
-    }, [tokenBalance, inventoryData]);
+    }, [tokenBalance, inventoryData, tokenDecimals]);
 
     // Compare previous and current resource values to trigger animations
     useEffect(() => {

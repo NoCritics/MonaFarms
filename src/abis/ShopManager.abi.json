@@ -1,0 +1,263 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "initialOwner",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_playerRegistryAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_itemRegistryAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_economyContractAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_playerLeaderboardAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_farmEnhancementContractAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_timeOracleAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_cropsTokenAddress",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "purchaseItem",
+    "inputs": [
+      {
+        "name": "itemId",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.ItemID"
+      },
+      {
+        "name": "quantity",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "purchaseFarmTile",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "economyContract",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract EconomyContract"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "itemRegistry",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract ItemRegistry"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "owner",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "playerRegistry",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract PlayerRegistryInventory"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "renounceOwnership",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setExternalContracts",
+    "inputs": [
+      {
+        "name": "_playerRegistryAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_itemRegistryAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_economyContractAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_playerLeaderboardAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_farmEnhancementContractAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_timeOracleAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_cropsTokenAddress",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "transferOwnership",
+    "inputs": [
+      {
+        "name": "newOwner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "ItemPurchased",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "itemId",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum GlobalEnumsAndStructs.ItemID"
+      },
+      {
+        "name": "quantity",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "cost",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FarmTilePurchased",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "newTileCount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "cost",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "OwnershipTransferred",
+    "inputs": [
+      {
+        "name": "previousOwner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "newOwner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  }
+] 

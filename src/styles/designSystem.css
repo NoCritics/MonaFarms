@@ -435,6 +435,7 @@ a:hover {
   color: var(--color-text-primary);
   font-size: var(--font-size-md);
   transition: all var(--transition-fast) ease;
+  box-sizing: border-box;
 }
 
 .form-control:focus {

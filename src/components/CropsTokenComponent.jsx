@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import { parseEther, formatEther } from 'viem';
-import CropsTokenABI from '../../contracts/abis/cropstoken-abi.json';
-import { CropsToken as CropsTokenIcon } from '../assets/FarmIcons';
-
-const CONTRACT_ADDRESSES = {
-    cropsToken: "0x9edD5162F5Cbc55Bd5d53342c996A44e3a753337",
-};
+import { parseEther, formatEther, formatUnits } from 'viem';
+import CROPS_TokenABI from '../abis/CROPS_Token.abi.json';
+import EconomyContractABI from '../abis/EconomyContract.abi.json';
+import { CONTRACT_ADDRESSES } from '../constants/contractAddresses';
+import { CropsToken as CropsTokenIcon } from '../assets/ItemImages';
 
 const CropsTokenComponent = () => {
     const { address } = useAccount();
@@ -14,20 +12,38 @@ const CropsTokenComponent = () => {
     const [transferRecipient, setTransferRecipient] = useState("");
     const [timeLeft, setTimeLeft] = useState(0);
     const [countdownInterval, setCountdownInterval] = useState(null);
+    const [tokenDecimals, setTokenDecimals] = useState(18); // Default to 18, but we'll read the actual value
 
+    // Get token decimals
+    const { data: decimalsData } = useReadContract({
+        address: CONTRACT_ADDRESSES.CROPS_Token,
+        abi: CROPS_TokenABI,
+        functionName: 'decimals',
+        enabled: !!address,
+    });
+
+    // Set token decimals when data is received
+    useEffect(() => {
+        if (decimalsData !== undefined) {
+            setTokenDecimals(Number(decimalsData));
+        }
+    }, [decimalsData]);
+
+    // Get token balance from CROPS_Token contract
     const { data: tokenBalance, refetch: refetchBalance } = useReadContract({
-        address: CONTRACT_ADDRESSES.cropsToken,
-        abi: CropsTokenABI,
+        address: CONTRACT_ADDRESSES.CROPS_Token,
+        abi: CROPS_TokenABI,
         functionName: 'balanceOf',
         args: [address],
         enabled: !!address,
     });
 
+    // Get faucet cooldown time from EconomyContract
     const { data: faucetTime, refetch: refetchFaucetTime } = useReadContract({
-        address: CONTRACT_ADDRESSES.cropsToken,
-        abi: CropsTokenABI,
-        functionName: 'timeUntilNextFaucet',
-        args: [address],
+        address: CONTRACT_ADDRESSES.EconomyContract,
+        abi: EconomyContractABI,
+        functionName: 'getTimeToCooldownEnd',
+        args: [address, 0], // 0 is the cooldown type for daily faucet
         enabled: !!address,
     });
 
@@ -70,8 +86,8 @@ const CropsTokenComponent = () => {
     const handleClaimFaucet = async () => {
         try {
             await claimFaucet({
-                address: CONTRACT_ADDRESSES.cropsToken,
-                abi: CropsTokenABI,
+                address: CONTRACT_ADDRESSES.EconomyContract,
+                abi: EconomyContractABI,
                 functionName: 'claimDailyFaucet'
             });
             refetchBalance();
@@ -87,11 +103,16 @@ const CropsTokenComponent = () => {
     const handleTransfer = async () => {
         if (!transferAmount || !transferRecipient) return;
         try {
+            // Use the correct decimals for parsing the transfer amount
+            const parsedAmount = tokenDecimals === 18 
+                ? parseEther(transferAmount) 
+                : BigInt(Math.floor(parseFloat(transferAmount) * (10 ** tokenDecimals)));
+
             await transferTokens({
-                address: CONTRACT_ADDRESSES.cropsToken,
-                abi: CropsTokenABI,
+                address: CONTRACT_ADDRESSES.CROPS_Token,
+                abi: CROPS_TokenABI,
                 functionName: 'transfer',
-                args: [transferRecipient, parseEther(transferAmount)]
+                args: [transferRecipient, parsedAmount]
             });
             setTransferAmount("");
             setTransferRecipient("");
@@ -108,6 +129,19 @@ const CropsTokenComponent = () => {
         const secs = seconds % 60;
         
         return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    };
+
+    // Format token balance with correct decimals
+    const formatTokenBalance = () => {
+        if (!tokenBalance) return '0';
+        
+        // Use formatUnits with the correct decimals if we have it, otherwise fall back to formatEther
+        try {
+            return formatUnits(tokenBalance, tokenDecimals);
+        } catch (error) {
+            console.error("Error formatting balance:", error);
+            return formatEther(tokenBalance); // Fallback
+        }
     };
 
     const timePercentage = timeLeft > 0 ? 100 - ((timeLeft / (24 * 3600)) * 100) : 100;
@@ -127,8 +161,8 @@ const CropsTokenComponent = () => {
                 <h3>Token Balance</h3>
                 
                 <div className="token-balance">
-                    <div className="token-icon">C</div>
-                    <div>{tokenBalance ? formatEther(tokenBalance) : '0'}</div>
+                    <div className="token-icon"><CropsTokenIcon size={24} /></div>
+                    <div>{formatTokenBalance()}</div>
                     <div className="token-label">CROPS</div>
                 </div>
                 

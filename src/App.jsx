@@ -8,6 +8,7 @@ import CropsTokenComponent from './components/CropsTokenComponent';
 import FarmManagerWrapper from './components/farm/FarmManagerWrapper';
 import ShopManagerComponent from './components/ShopManagerComponent';
 import LeaderboardComponent from './components/LeaderboardComponent';
+import CraftingManagerComponent from './components/CraftingManagerComponent';
 import Sidebar from './components/Sidebar';
 import DayNightCycle from './components/animations/DayNightCycle';
 import { NotificationProvider, useNotification } from './components/notifications/NotificationSystem';
@@ -72,7 +73,7 @@ const MainContent = () => {
     // Check for hash in URL on load
     useEffect(() => {
         const hash = window.location.hash.replace('#', '');
-        if (hash && ['farm', 'shop', 'token', 'player', 'leaderboard'].includes(hash)) {
+        if (hash && ['farm', 'shop', 'crafting', 'token', 'player', 'leaderboard'].includes(hash)) {
             setActiveTab(hash);
         }
     }, []);
@@ -155,6 +156,12 @@ const MainContent = () => {
                                         <span className="nav-tab-icon">🛒</span> Shop
                                     </div>
                                     <div
+                                        className={`nav-tab ${activeTab === 'crafting' ? 'active' : ''}`}
+                                        onClick={() => handleTabChange('crafting')}
+                                    >
+                                        <span className="nav-tab-icon">⚒️</span> Crafting
+                                    </div>
+                                    <div
                                         className={`nav-tab ${activeTab === 'token' ? 'active' : ''}`}
                                         onClick={() => handleTabChange('token')}
                                     >
@@ -179,6 +186,7 @@ const MainContent = () => {
                                     {activeTab === 'token' && <CropsTokenComponent />}
                                     {activeTab === 'farm' && <FarmManagerWrapper />}
                                     {activeTab === 'shop' && <ShopManagerComponent />}
+                                    {activeTab === 'crafting' && <CraftingManagerComponent />}
                                     {activeTab === 'leaderboard' && <LeaderboardComponent />}
                                 </div>
                             </>

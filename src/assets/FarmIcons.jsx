@@ -1,5 +1,75 @@
 import React from 'react';
 
+// Import images from the art folder
+import potatoImage from '../art/Potato.jpg';
+import tomatoImage from '../art/Tomato.jpg';
+import strawberryImage from '../art/strawberry.jpg';
+import waterBucketImage from '../art/water bucket.png';
+import fertilizerImage from '../art/Fertilizer.jpg';
+import cropsTokenImage from '../art/Crops token.png';
+import cornImage from '../art/Corn.jpg';
+import carrotImage from '../art/Carrot.jpg';
+import pumpkinImage from '../art/Pumpkin.jpg';
+import wheatImage from '../art/Wheat.jpg';
+import watermelonImage from '../art/Watermelon.jpg';
+import cactusImage from '../art/Cactus.jpg';
+import goldenSeedsImage from '../art/golden seeds.jpg';
+import crystalBerriesImage from '../art/Crystal Berries.jpg';
+import moonflowerImage from '../art/Moonflower.jpg';
+import ancientGrainImage from '../art/Ancient Grain.jpg';
+import rainbowFruitImage from '../art/Rainbow Fruit.jpg';
+
+// Image container component for consistent styling
+const ImageContainer = ({ src, alt, size = 24, className = '', style = {} }) => {
+  return (
+    <div 
+      className={`item-image-container ${className}`} 
+      style={{ 
+        width: `${size}px`, 
+        height: `${size}px`,
+        ...style 
+      }}
+    >
+      <img 
+        src={src} 
+        alt={alt} 
+        style={{ 
+          width: '100%', 
+          height: '100%', 
+          objectFit: 'cover',
+          borderRadius: '50%'
+        }}
+        onError={(e) => {
+          // If image fails to load, show a colored background with first letter
+          e.target.style.display = 'none';
+          const container = e.target.parentElement;
+          if (container) {
+            container.style.backgroundColor = getRandomColor(alt);
+            container.style.color = '#fff';
+            container.style.display = 'flex';
+            container.style.alignItems = 'center';
+            container.style.justifyContent = 'center';
+            container.style.fontSize = `${size/2}px`;
+            container.style.fontWeight = 'bold';
+            container.textContent = alt.charAt(0).toUpperCase();
+          }
+        }}
+      />
+    </div>
+  );
+};
+
+// Helper function to generate a consistent color based on the item name
+const getRandomColor = (text) => {
+  let hash = 0;
+  for (let i = 0; i < text.length; i++) {
+    hash = text.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  
+  const hue = Math.abs(hash % 360);
+  return `hsl(${hue}, 70%, 40%)`;
+};
+
 // Tomato plant with growth stages
 export const TomatoPlant = ({ stage = 0, size = 30 }) => {
   // Stage: 0-not planted, 1-seedling, 2-growing, 3-mature
@@ -122,46 +192,66 @@ export const StrawberryPlant = ({ stage = 0, size = 30 }) => {
   return stages[stage] || null;
 };
 
-// Water bucket icon
-export const WaterBucket = ({ size = 24 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M7 10V16C7 17.1046 7.89543 18 9 18H15C16.1046 18 17 17.1046 17 16V10H7Z" fill="#7086D5"/>
-    <path d="M7 8H17M7 8C5.89543 8 5 8.89543 5 10V16C5 18.2091 6.79086 20 9 20H15C17.2091 20 19 18.2091 19 16V10C19 8.89543 18.1046 8 17 8M7 8V6C7 4.89543 7.89543 4 9 4H15C16.1046 4 17 4.89543 17 6V8" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M10 12H14" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M10 15H14" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-  </svg>
+// Water bucket icon - UPDATED to use real image
+export const WaterBucket = ({ size = 24, className = '', style = {} }) => (
+  <ImageContainer 
+    src={waterBucketImage} 
+    alt="Water Bucket" 
+    size={size}
+    className={className}
+    style={style}
+  />
 );
 
-// Fertilizer icon
-export const Fertilizer = ({ size = 24 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="5" y="6" width="14" height="14" rx="2" fill="#9C6B4D"/>
-    <path d="M8 6V4H16V6" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M7 10H17" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M7 14H17" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M7 18H17" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-    <circle cx="9" cy="8" r="1" fill="#fff"/>
-    <circle cx="15" cy="8" r="1" fill="#fff"/>
-    <circle cx="9" cy="12" r="1" fill="#fff"/>
-    <circle cx="15" cy="12" r="1" fill="#fff"/>
-    <circle cx="9" cy="16" r="1" fill="#fff"/>
-    <circle cx="15" cy="16" r="1" fill="#fff"/>
-  </svg>
+// Fertilizer icon - UPDATED to use real image
+export const Fertilizer = ({ size = 24, className = '', style = {} }) => (
+  <ImageContainer 
+    src={fertilizerImage} 
+    alt="Fertilizer" 
+    size={size}
+    className={className}
+    style={style}
+  />
 );
 
-// Seed packet icon
-export const SeedPacket = ({ cropType = 0, size = 24 }) => {
-  const colors = ['#C68D59', '#E53935', '#E91E63']; // potato, tomato, strawberry
-  const color = colors[cropType] || colors[0];
+// Seed packet icon - UPDATED to use real images
+export const SeedPacket = ({ cropType = 0, size = 24, className = '', style = {} }) => {
+  // Map crop types to their images
+  const cropImages = [
+    potatoImage,    // 0 = Potato
+    tomatoImage,    // 1 = Tomato
+    strawberryImage, // 2 = Strawberry
+    cornImage,      // 3 = Corn
+    carrotImage,    // 4 = Carrot
+    pumpkinImage,   // 5 = Pumpkin
+    wheatImage,     // 6 = Wheat
+    watermelonImage, // 7 = Watermelon
+    cactusImage,    // 8 = Cactus
+    goldenSeedsImage, // 9 = Golden Seeds
+    crystalBerriesImage, // 10 = Crystal Berries
+    moonflowerImage, // 11 = Moonflower
+    ancientGrainImage, // 12 = Ancient Grain
+    rainbowFruitImage // 13 = Rainbow Fruit
+  ];
+
+  // Get the correct image or default to potato if invalid type
+  const imgSrc = cropImages[cropType] || potatoImage;
+  const cropNames = ['Potato', 'Tomato', 'Strawberry', 'Corn', 'Carrot', 'Pumpkin', 'Wheat', 
+                   'Watermelon', 'Cactus', 'Golden Seeds', 'Crystal Berries', 'Moonflower',
+                   'Ancient Grain', 'Rainbow Fruit'];
+  const altText = `${cropNames[cropType] || 'Unknown'} Seeds`;
   
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M5 6L8 4H16L19 6V20H5V6Z" fill={color} />
-      <path d="M5 6L8 4H16L19 6V20H5V6Z" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round"/>
-      <path d="M5 6H19" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
-      <path d="M12 10C12 10 10 12 10 14C10 16 11 17 12 17C13 17 14 16 14 14C14 12 12 10 12 10Z" fill="#4CAF50" stroke="#fff" strokeWidth="1"/>
-      <path d="M12 8V10" stroke="#4CAF50" strokeWidth="1.5" strokeLinecap="round"/>
-    </svg>
+    <ImageContainer 
+      src={imgSrc} 
+      alt={altText} 
+      size={size}
+      className={`seed-packet ${className}`}
+      style={{
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+        ...style
+      }}
+    />
   );
 };
 
@@ -179,15 +269,15 @@ export const TilePlot = ({ size = 24 }) => (
   </svg>
 );
 
-// Crops Token icon
-export const CropsToken = ({ size = 24 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="12" cy="12" r="9" fill="#F7B538"/>
-    <circle cx="12" cy="12" r="9" stroke="#fff" strokeWidth="1.5"/>
-    <path d="M8 12.5C8 10.0147 9.79086 8 12 8C14.2091 8 16 10.0147 16 12.5C16 14.9853 14.2091 17 12 17" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
-    <path d="M12 17C9.79086 17 8 14.9853 8 12.5" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
-    <path d="M8 12.5H16" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
-  </svg>
+// Crops Token icon - UPDATED to use real image
+export const CropsToken = ({ size = 24, className = '', style = {} }) => (
+  <ImageContainer 
+    src={cropsTokenImage} 
+    alt="CROPS Token" 
+    size={size}
+    className={className}
+    style={style}
+  />
 );
 
 // Faucet icon
@@ -243,3 +333,58 @@ export const Trophy = ({ size = 24 }) => (
     <path d="M17 6H20V8C20 9.65685 18.6569 11 17 11V6Z" stroke="#fff" strokeWidth="1.5"/>
   </svg>
 );
+
+// Corn plant (placeholder using variation of existing plants)
+export const CornPlant = ({ stage = 0, size = 30 }) => {
+  return PotatoPlant({ stage, size }); // Using potato plant as fallback for now
+};
+
+// Carrot plant (placeholder using variation of existing plants)
+export const CarrotPlant = ({ stage = 0, size = 30 }) => {
+  return StrawberryPlant({ stage, size }); // Using strawberry plant as fallback for now
+};
+
+// Pumpkin plant (placeholder using variation of existing plants)
+export const PumpkinPlant = ({ stage = 0, size = 30 }) => {
+  return TomatoPlant({ stage, size }); // Using tomato plant as fallback for now
+};
+
+// Wheat plant (placeholder using variation of existing plants)
+export const WheatPlant = ({ stage = 0, size = 30 }) => {
+  return PotatoPlant({ stage, size }); // Using potato plant as fallback for now
+};
+
+// Watermelon plant (placeholder using variation of existing plants)
+export const WatermelonPlant = ({ stage = 0, size = 30 }) => {
+  return TomatoPlant({ stage, size }); // Using tomato plant as fallback for now
+};
+
+// Cactus plant (placeholder using variation of existing plants)
+export const CactusPlant = ({ stage = 0, size = 30 }) => {
+  return StrawberryPlant({ stage, size }); // Using strawberry plant as fallback for now
+};
+
+// Golden plant (placeholder using variation of existing plants)
+export const GoldenPlant = ({ stage = 0, size = 30 }) => {
+  return PotatoPlant({ stage, size }); // Using potato plant as fallback for now
+};
+
+// Crystal Berries plant (placeholder using variation of existing plants)
+export const CrystalBerriesPlant = ({ stage = 0, size = 30 }) => {
+  return StrawberryPlant({ stage, size }); // Using strawberry plant as fallback for now
+};
+
+// Moonflowers plant (placeholder using variation of existing plants)
+export const MoonflowersPlant = ({ stage = 0, size = 30 }) => {
+  return TomatoPlant({ stage, size }); // Using tomato plant as fallback for now
+};
+
+// Ancient Grain plant (placeholder using variation of existing plants)
+export const AncientGrainPlant = ({ stage = 0, size = 30 }) => {
+  return PotatoPlant({ stage, size }); // Using potato plant as fallback for now
+};
+
+// Rainbow Fruit plant (placeholder using variation of existing plants)
+export const RainbowFruitPlant = ({ stage = 0, size = 30 }) => {
+  return StrawberryPlant({ stage, size }); // Using strawberry plant as fallback for now
+};

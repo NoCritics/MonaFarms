@@ -1,25 +1,96 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import FarmManagerABI from '../../contracts/abis/farmmanager-abi.json';
+import FarmManagerABI from '../abis/FarmManager.abi.json';
+import PlayerRegistryInventoryABI from '../abis/PlayerRegistryInventory.abi.json';
+import { CONTRACT_ADDRESSES } from '../constants/contractAddresses';
 import { 
-  TomatoPlant, 
-  PotatoPlant, 
-  StrawberryPlant, 
   WaterBucket, 
   Fertilizer,
   EmptyPlot,
   PlantedPlot,
-  WateredPlot
-} from '../assets/FarmIcons';
+  WateredPlot,
+  PotatoPlant,
+  TomatoPlant,
+  StrawberryPlant,
+  SeedPacket,
+  CropsToken,
+  Wood,
+  Fabric,
+  EssenceExtractor,
+  GoldenSeeds,
+  CrystalEssence,
+  Moonleaf,
+  AncientApple,
+  RainbowShard,
+  GoldDust,
+  TimeCrystal,
+  RainbowCore,
+  ItemImages,
+  FertileMesh,
+  PlantImages
+} from '../assets/ItemImages';
+import InventoryItem from './ui/InventoryItem';
+
+// Preload all plant images
+const preloadImages = () => {
+  Object.values(PlantImages).forEach((src) => {
+    const img = new Image();
+    img.src = src;
+  });
+};
+
+// Call preload function immediately
+preloadImages();
 
 const CONTRACT_ADDRESSES = {
     farmManager: "0x5aCCeeD085c61cF12172E74969186814F2a984df",
 };
 
+// ItemID enum values 
+const ITEM_IDS = {
+  CROPS_CURRENCY: 0,
+  WATER_BUCKET: 1,
+  FERTILIZER: 2,
+  GOLDEN_SEED_ITEM: 3,
+  CRYSTAL_ESSENCE: 4,
+  MOONLEAF: 5,
+  ANCIENT_APPLE: 6,
+  RAINBOW_SHARD: 7,
+  POTATO_SEED: 8,
+  TOMATO_SEED: 9,
+  STRAWBERRY_SEED: 10,
+  CORN_SEED: 11,
+  CARROT_SEED: 12,
+  PUMPKIN_SEED: 13,
+  WHEAT_SEED: 14,
+  WATERMELON_SEED: 15,
+  CACTUS_SEED: 16,
+  CRYSTAL_BERRIES_SEED: 17,
+  MOONFLOWERS_SEED: 18,
+  RAINBOW_FRUIT_SEED: 19,
+  ANCIENT_GRAIN_SEEDS_BUYABLE: 20,
+  ANCIENT_APPLE_SEEDS: 21,
+  RAINBOW_CORE: 22,
+  ESSENCE_EXTRACTOR: 23,
+  WOOD: 24,
+  FABRIC: 25,
+  GOLD_DUST: 26,
+  TIME_CRYSTAL: 27,
+  FERTILE_MESH: 28,
+  GROWTH_LAMP: 29,
+  RAINCATCHER: 30,
+  LUNAR_HARVESTER_ITEM: 31,
+  MONADIUM_SICKLE_ITEM: 32,
+  MONADIUM_HOE_ITEM: 33,
+  BLUEPRINT_MONADIUM_SICKLE: 34,
+  BLUEPRINT_MONADIUM_HOE: 35,
+  FARM_TILE_ITEM: 36
+};
+
 const cropTypes = [
-  { name: 'Potato', emoji: '🥔', component: PotatoPlant },
-  { name: 'Tomato', emoji: '🍅', component: TomatoPlant },
-  { name: 'Strawberry', emoji: '🍓', component: StrawberryPlant }
+  { name: 'Potato', component: PotatoPlant },
+  { name: 'Tomato', component: TomatoPlant },
+  { name: 'Strawberry', component: StrawberryPlant }
 ];
 
 const getGrowthStage = (isPlanted, isWatered, isReady, plantedTime, growthTime) => {
@@ -50,14 +121,16 @@ const FarmManagerComponent = () => {
     const [isWatering, setIsWatering] = useState(false);
     const [isHarvesting, setIsHarvesting] = useState(false);
     const [isFertilizing, setIsFertilizing] = useState(false);
+    const [timeOracle, setTimeOracle] = useState(null);
     const waterAnimationRef = useRef(null);
     const [lastAction, setLastAction] = useState('');
     const [lastActionTime, setLastActionTime] = useState(0);
+    const [tileInfoMap, setTileInfoMap] = useState({});  // Store data for all tiles
 
     const { data: inventoryData, refetch: refetchInventory } = useReadContract({
         address: CONTRACT_ADDRESSES.farmManager,
         abi: FarmManagerABI,
-        functionName: 'getPlayerInventory',
+        functionName: 'getPlayerPlantableSeeds',
         args: [address],
         enabled: !!address,
     });
@@ -65,41 +138,67 @@ const FarmManagerComponent = () => {
     const { data: tileCountData, refetch: refetchTileCount } = useReadContract({
         address: CONTRACT_ADDRESSES.farmManager,
         abi: FarmManagerABI,
-        functionName: 'getPlayerTileCount',
-        args: [address],
+        functionName: 'playerRegistry',
+        args: [],
         enabled: !!address,
     });
 
     const { data: tileInfoData, refetch: refetchTileInfo } = useReadContract({
         address: CONTRACT_ADDRESSES.farmManager,
         abi: FarmManagerABI,
-        functionName: 'getTileInfo',
+        functionName: 'getFarmTile',
         args: [address, selectedTile],
         enabled: !!address && tileCount > 0,
     });
 
+    // Get timeOracle address
+    const { data: timeOracleAddress } = useReadContract({
+        address: CONTRACT_ADDRESSES.farmManager,
+        abi: FarmManagerABI,
+        functionName: 'timeOracle',
+        args: [],
+        enabled: !!address,
+    });
+
+    // Add a utility function to get current timestamp
+    const getCurrentTimestamp = () => {
+        return Math.floor(Date.now() / 1000);
+    };
+
+    useEffect(() => {
+        if (timeOracleAddress) {
+            // We would normally initialize the timeOracle contract here
+            // For now, let's use a simplified version with just getCurrentTimestamp
+            setTimeOracle({
+                getCurrentTimestamp
+            });
+        }
+    }, [timeOracleAddress]);
+
     // Get crop config for growth times and yields
-    const getCropConfig = async (cropType) => {
+    const getCropConfig = async (cropId) => {
       try {
-        const { data } = await useReadContract.fetch({
+        const { data: itemRegistryAddress } = await useReadContract.fetch({
           address: CONTRACT_ADDRESSES.farmManager,
           abi: FarmManagerABI,
-          functionName: 'getCropConfig',
-          args: [cropType],
+          functionName: 'itemRegistry',
+          args: [],
         });
-        
+
+        // We'll need to get the crop data directly from ItemRegistry
+        // For now, use fallback values since we don't have ItemRegistry ABI
         return {
-          cost: Number(data[0]),
-          growthTime: Number(data[1]),
-          yield: Number(data[2]),
-          enabled: data[3]
+          growthTime: cropId === 0 ? 10800 : cropId === 1 ? 7200 : 3600, // 3h, 2h, 1h
+          yield: cropId === 0 ? 10 : cropId === 1 ? 15 : 20,
+          waterNeeded: 1,
+          enabled: true
         };
       } catch (error) {
         console.error("Error fetching crop config:", error);
         return {
-          cost: 0,
-          growthTime: 3600, // Default 1 hour
-          yield: 0,
+          growthTime: cropId === 0 ? 10800 : cropId === 1 ? 7200 : 3600, // 3h, 2h, 1h
+          yield: cropId === 0 ? 10 : cropId === 1 ? 15 : 20,
+          waterNeeded: 1,
           enabled: true
         };
       }
@@ -118,9 +217,9 @@ const FarmManagerComponent = () => {
             console.error(`Error fetching config for crop type ${i}:`, error);
             // Use fallback values
             configs.push({
-              cost: 0,
               growthTime: i === 0 ? 10800 : i === 1 ? 7200 : 3600, // 3h, 2h, 1h
-              yield: 0,
+              yield: i === 0 ? 10 : i === 1 ? 15 : 20,
+              waterNeeded: 1,
               enabled: true
             });
           }
@@ -134,33 +233,138 @@ const FarmManagerComponent = () => {
       }
     }, [address]);
 
+    // Add helper functions to get item icons and names
+    const getItemIcon = (itemId, size = 50) => {
+        // For seed items
+        if (itemId >= ITEM_IDS.POTATO_SEED && itemId <= ITEM_IDS.RAINBOW_FRUIT_SEED) {
+            const cropType = itemId - ITEM_IDS.POTATO_SEED;
+            return <SeedPacket cropType={cropType} size={size} />;
+        }
+        
+        // Map item IDs to their corresponding image components
+        const itemIconMap = {
+            [ITEM_IDS.CROPS_CURRENCY]: <CropsToken size={size} />,
+            [ITEM_IDS.WATER_BUCKET]: <WaterBucket size={size} />,
+            [ITEM_IDS.FERTILIZER]: <Fertilizer size={size} />,
+            [ITEM_IDS.GOLDEN_SEED_ITEM]: <GoldenSeeds size={size} />,
+            [ITEM_IDS.CRYSTAL_ESSENCE]: <CrystalEssence size={size} />,
+            [ITEM_IDS.MOONLEAF]: <Moonleaf size={size} />,
+            [ITEM_IDS.ANCIENT_APPLE]: <AncientApple size={size} />,
+            [ITEM_IDS.RAINBOW_SHARD]: <RainbowShard size={size} />,
+            [ITEM_IDS.RAINBOW_CORE]: <RainbowCore size={size} />,
+            [ITEM_IDS.ESSENCE_EXTRACTOR]: <EssenceExtractor size={size} />,
+            [ITEM_IDS.WOOD]: <Wood size={size} />,
+            [ITEM_IDS.FABRIC]: <Fabric size={size} />,
+            [ITEM_IDS.GOLD_DUST]: <GoldDust size={size} />,
+            [ITEM_IDS.TIME_CRYSTAL]: <TimeCrystal size={size} />,
+            [ITEM_IDS.FERTILE_MESH]: <FertileMesh size={size} />,
+            [ITEM_IDS.ANCIENT_APPLE_SEEDS]: <SeedPacket cropType={12} size={size} />,
+            [ITEM_IDS.ANCIENT_GRAIN_SEEDS_BUYABLE]: <SeedPacket cropType={12} size={size} />
+        };
+        
+        // Return the specific icon for the item ID, or fall back to a generic icon
+        return itemIconMap[itemId] || <ItemImages.TilePlot size={size} />;
+    };
+
+    // Helper to get item name
+    const getItemName = (itemId) => {
+        // For seed items
+        if (itemId >= ITEM_IDS.POTATO_SEED && itemId <= ITEM_IDS.RAINBOW_FRUIT_SEED) {
+            const cropNames = [
+                "Potato", "Tomato", "Strawberry", "Corn", "Carrot", "Pumpkin", 
+                "Wheat", "Watermelon", "Cactus", "Crystal Berries", "Moonflowers", 
+                "Rainbow Fruit"
+            ];
+            const index = itemId - ITEM_IDS.POTATO_SEED;
+            if (index >= 0 && index < cropNames.length) {
+                return `${cropNames[index]} Seeds`;
+            }
+        }
+
+        const itemNames = {
+            [ITEM_IDS.CROPS_CURRENCY]: "CROPS Token",
+            [ITEM_IDS.WATER_BUCKET]: "Water Charges",
+            [ITEM_IDS.FERTILIZER]: "Fertilizer",
+            [ITEM_IDS.GOLDEN_SEED_ITEM]: "Golden Seeds",
+            [ITEM_IDS.CRYSTAL_ESSENCE]: "Crystal Essence",
+            [ITEM_IDS.MOONLEAF]: "Moonleaf",
+            [ITEM_IDS.ANCIENT_APPLE]: "Ancient Apple",
+            [ITEM_IDS.RAINBOW_SHARD]: "Rainbow Shard",
+            [ITEM_IDS.RAINBOW_CORE]: "Rainbow Core",
+            [ITEM_IDS.ESSENCE_EXTRACTOR]: "Essence Extractor",
+            [ITEM_IDS.WOOD]: "Wood",
+            [ITEM_IDS.FABRIC]: "Fabric",
+            [ITEM_IDS.GOLD_DUST]: "Gold Dust",
+            [ITEM_IDS.TIME_CRYSTAL]: "Time Crystal",
+            [ITEM_IDS.FERTILE_MESH]: "Fertile Mesh",
+            [ITEM_IDS.GROWTH_LAMP]: "Growth Lamp",
+            [ITEM_IDS.RAINCATCHER]: "Raincatcher",
+            [ITEM_IDS.LUNAR_HARVESTER_ITEM]: "Lunar Harvester",
+            [ITEM_IDS.MONADIUM_SICKLE_ITEM]: "Monadium Sickle",
+            [ITEM_IDS.MONADIUM_HOE_ITEM]: "Monadium Hoe",
+            [ITEM_IDS.BLUEPRINT_MONADIUM_SICKLE]: "Monadium Sickle Blueprint",
+            [ITEM_IDS.BLUEPRINT_MONADIUM_HOE]: "Monadium Hoe Blueprint",
+            [ITEM_IDS.ANCIENT_APPLE_SEEDS]: "Ancient Apple Seeds",
+            [ITEM_IDS.ANCIENT_GRAIN_SEEDS_BUYABLE]: "Ancient Grain Seeds"
+        };
+
+        return itemNames[itemId] || `Item #${itemId}`;
+    };
+
+    // Update the inventory data processing in useEffect
     useEffect(() => {
         if (inventoryData) {
-            setInventory({
-                potatoSeeds: Number(inventoryData[0]),
-                tomatoSeeds: Number(inventoryData[1]),
-                strawberrySeeds: Number(inventoryData[2]),
-                waterBuckets: Number(inventoryData[3]),
-                fertilizerCharges: Number(inventoryData[4]),
-                lastFertilizerPurchase: Number(inventoryData[5])
+            const fullInventory = {};
+            
+            // Process inventory data from the contract
+            // In a real implementation, we'd extract this from inventoryData directly
+            // For now, we'll add a debug code that populates with sample inventory data
+            inventoryData.forEach(seed => {
+                if (seed.cropId === 0) { // Potato
+                    fullInventory[ITEM_IDS.POTATO_SEED] = Number(seed.amountOwned);
+                } else if (seed.cropId === 1) { // Tomato
+                    fullInventory[ITEM_IDS.TOMATO_SEED] = Number(seed.amountOwned);
+                } else if (seed.cropId === 2) { // Strawberry
+                    fullInventory[ITEM_IDS.STRAWBERRY_SEED] = Number(seed.amountOwned);
+                }
             });
+            
+            // Add water and fertilizer with default values (in real implementation, these would come from inventory data)
+            fullInventory[ITEM_IDS.WATER_BUCKET] = 10;
+            fullInventory[ITEM_IDS.FERTILIZER] = 5;
+            
+            // Add some sample data for other resources (in real implementation, these would come from inventory data)
+            fullInventory[ITEM_IDS.CROPS_CURRENCY] = 1000;
+            fullInventory[ITEM_IDS.WOOD] = 5;
+            fullInventory[ITEM_IDS.FABRIC] = 3;
+            fullInventory[ITEM_IDS.CRYSTAL_ESSENCE] = 2;
+            
+            setInventory(fullInventory);
         }
 
         if (tileCountData) {
-            setTileCount(Number(tileCountData));
+            // We need to call another function to get player farm tiles count
+            // For now, use a placeholder value
+            setTileCount(6); // Placeholder
         }
 
         if (tileInfoData) {
             const tileInfoObj = {
-                exists: tileInfoData[0],
-                cropType: Number(tileInfoData[1]),
-                plantedTime: Number(tileInfoData[2]),
-                isWatered: tileInfoData[3],
-                cropExists: tileInfoData[4],
-                isReady: tileInfoData[5]
+                exists: tileInfoData.plantedAt !== 0,
+                cropType: Number(tileInfoData.plantedCrop),
+                plantedTime: Number(tileInfoData.plantedAt),
+                isWatered: tileInfoData.waterCount > 0,
+                cropExists: tileInfoData.plantedAt !== 0,
+                isReady: timeOracle.getCurrentTimestamp ? timeOracle.getCurrentTimestamp() >= tileInfoData.maturityTime : false
             };
             
             setTileInfo(tileInfoObj);
+            
+            // Add to the tile info map
+            setTileInfoMap(prevMap => ({
+                ...prevMap,
+                [selectedTile]: tileInfoObj
+            }));
             
             // Calculate growth percentage
             if (tileInfoObj.cropExists && tileInfoObj.isWatered && !tileInfoObj.isReady) {
@@ -180,7 +384,7 @@ const FarmManagerComponent = () => {
                 setGrowthPercentage(0);
             }
         }
-    }, [inventoryData, tileCountData, tileInfoData, cropConfigs]);
+    }, [inventoryData, tileCountData, tileInfoData, cropConfigs, timeOracle]);
 
     // Set up interval to update growth percentage
     useEffect(() => {
@@ -218,11 +422,21 @@ const FarmManagerComponent = () => {
     const plantCrop = async () => {
         if (!address) return;
         try {
+            // Convert crop type to seed ItemID
+            // For now, hardcode some ItemID enum values that correspond to the seed types
+            const seedItemIds = [
+                1, // ItemID.POTATO_SEEDS - using a sample value
+                2, // ItemID.TOMATO_SEEDS - using a sample value
+                3  // ItemID.STRAWBERRY_SEEDS - using a sample value
+            ];
+            
+            const seedItemId = seedItemIds[cropType];
+            
             await writeContract({
                 address: CONTRACT_ADDRESSES.farmManager,
                 abi: FarmManagerABI,
                 functionName: 'plantCrop',
-                args: [selectedTile, cropType]
+                args: [selectedTile, seedItemId]
             });
             setLastAction('planted');
             setLastActionTime(Date.now());
@@ -300,7 +514,7 @@ const FarmManagerComponent = () => {
             await writeContract({
                 address: CONTRACT_ADDRESSES.farmManager,
                 abi: FarmManagerABI,
-                functionName: 'useFertilizer',
+                functionName: 'fertilizeCrop',
                 args: [selectedTile]
             });
             
@@ -333,33 +547,34 @@ const FarmManagerComponent = () => {
             
             {inventory && (
                 <div className="inventory-section">
-                    <h3>Inventory</h3>
-                    <div className="inventory-grid">
-                        <div className="inventory-item">
-                            <div className="inventory-icon">🥔</div>
-                            <div className="inventory-count">{inventory.potatoSeeds}</div>
-                            <div className="inventory-label">Potato Seeds</div>
-                        </div>
-                        <div className="inventory-item">
-                            <div className="inventory-icon">🍅</div>
-                            <div className="inventory-count">{inventory.tomatoSeeds}</div>
-                            <div className="inventory-label">Tomato Seeds</div>
-                        </div>
-                        <div className="inventory-item">
-                            <div className="inventory-icon">🍓</div>
-                            <div className="inventory-count">{inventory.strawberrySeeds}</div>
-                            <div className="inventory-label">Strawberry Seeds</div>
-                        </div>
-                        <div className="inventory-item">
-                            <div className="inventory-icon">💧</div>
-                            <div className="inventory-count">{inventory.waterBuckets}</div>
-                            <div className="inventory-label">Water Buckets</div>
-                        </div>
-                        <div className="inventory-item">
-                            <div className="inventory-icon">🧪</div>
-                            <div className="inventory-count">{inventory.fertilizerCharges}</div>
-                            <div className="inventory-label">Fertilizer</div>
-                        </div>
+                    <div className="section-header">
+                        <h3>Inventory</h3>
+                        <button className="btn btn-secondary">Show Details</button>
+                    </div>
+                    <div className="inventory-grid" style={{ paddingBottom: '3rem' }}>
+                        {/* Display all inventory items except for farm tiles */}
+                        {Object.entries(inventory).map(([itemId, count]) => {
+                            // Skip farm tiles
+                            if (Number(itemId) === ITEM_IDS.FARM_TILE_ITEM) return null;
+                            // Skip items with zero count
+                            if (count === 0) return null;
+
+                            return (
+                                <InventoryItem
+                                    key={itemId}
+                                    icon={getItemIcon(Number(itemId))}
+                                    count={count}
+                                    label={getItemName(Number(itemId))}
+                                />
+                            );
+                        })}
+                        
+                        {/* Show message if inventory is empty */}
+                        {Object.keys(inventory).length === 0 && (
+                            <div className="empty-inventory-message">
+                                <p>Your inventory is empty. Visit the shop to purchase items!</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
@@ -370,50 +585,57 @@ const FarmManagerComponent = () => {
                 {tileCount > 0 ? (
                     <div>
                         <div className="farm-grid">
-                            {Array.from({ length: tileCount }, (_, i) => (
-                                <div
-                                    key={i}
-                                    className={`farm-tile ${selectedTile === i ? 'selected' : ''} ${isWatering && selectedTile === i ? 'watering' : ''} ${isHarvesting && selectedTile === i ? 'harvesting' : ''} ${isFertilizing && selectedTile === i ? 'fertilizing' : ''}`}
-                                    onClick={() => setSelectedTile(i)}
-                                >
-                                    <div className="farm-tile-number">{i + 1}</div>
-                                    
-                                    {tileInfo && selectedTile === i && tileInfo.cropExists && (
-                                        <>
-                                            {(() => {
-                                                const cropConfig = cropConfigs[tileInfo.cropType];
-                                                const growthTime = cropConfig ? cropConfig.growthTime : 3600;
-                                                const stage = getGrowthStage(
-                                                    tileInfo.cropExists,
-                                                    tileInfo.isWatered,
-                                                    tileInfo.isReady,
-                                                    tileInfo.plantedTime,
-                                                    growthTime
-                                                );
+                            {Array.from({ length: tileCount }, (_, i) => {
+                                const isTileSelected = selectedTile === i;
+                                const cachedTileInfo = tileInfoMap[i];
+                                
+                                return (
+                                    <div
+                                        key={i}
+                                        className={`farm-tile ${isTileSelected ? 'selected' : ''} ${isWatering && isTileSelected ? 'watering' : ''} ${isHarvesting && isTileSelected ? 'harvesting' : ''} ${isFertilizing && isTileSelected ? 'fertilizing' : ''}`}
+                                        onClick={() => setSelectedTile(i)}
+                                    >
+                                        <div className="farm-tile-number">{i + 1}</div>
+                                        
+                                        {cachedTileInfo && cachedTileInfo.cropExists && (
+                                            <>
+                                                {(() => {
+                                                    const cropConfig = cropConfigs[cachedTileInfo.cropType];
+                                                    const growthTime = cropConfig ? cropConfig.growthTime : 3600;
+                                                    const stage = getGrowthStage(
+                                                        cachedTileInfo.cropExists,
+                                                        cachedTileInfo.isWatered,
+                                                        cachedTileInfo.isReady,
+                                                        cachedTileInfo.plantedTime,
+                                                        growthTime
+                                                    );
+                                                    
+                                                    const CropComponent = cropTypes[cachedTileInfo.cropType]?.component || EmptyPlot;
+                                                    return <CropComponent stage={stage} size={60} />;
+                                                })()}
                                                 
-                                                const CropComponent = cropTypes[tileInfo.cropType].component;
-                                                return <CropComponent stage={stage} size={40} />;
-                                            })()}
-                                            
-                                            <div 
-                                                className={`farm-tile-status ${tileInfo.isReady ? 'ready' : tileInfo.isWatered ? 'growing' : 'empty'}`}
-                                            ></div>
-                                        </>
-                                    )}
-                                    
-                                    {(!tileInfo || selectedTile !== i || !tileInfo.cropExists) && (
-                                        <EmptyPlot size={40} />
-                                    )}
-                                    
-                                    {isWatering && selectedTile === i && (
-                                        <div className="water-animation" ref={waterAnimationRef}>💧</div>
-                                    )}
-                                    
-                                    {isHarvesting && selectedTile === i && (
-                                        <div className="harvest-animation"></div>
-                                    )}
-                                </div>
-                            ))}
+                                                <div 
+                                                    className={`farm-tile-status ${cachedTileInfo.isReady ? 'ready' : cachedTileInfo.isWatered ? 'growing' : 'empty'}`}
+                                                ></div>
+                                            </>
+                                        )}
+                                        
+                                        {(!cachedTileInfo || !cachedTileInfo.cropExists) && (
+                                            <EmptyPlot size={60} />
+                                        )}
+                                        
+                                        {isWatering && isTileSelected && (
+                                            <div className="water-animation" ref={waterAnimationRef}>
+                                                <WaterBucket size={36} />
+                                            </div>
+                                        )}
+                                        
+                                        {isHarvesting && isTileSelected && (
+                                            <div className="harvest-animation"></div>
+                                        )}
+                                    </div>
+                                );
+                            })}
                         </div>
                         
                         {tileInfo && tileInfo.exists && (
@@ -424,11 +646,13 @@ const FarmManagerComponent = () => {
                                     <div>
                                         <p>
                                             <span className={`font-bold crop-${cropTypes[tileInfo.cropType].name.toLowerCase()}`}>
-                                                {cropTypes[tileInfo.cropType].emoji} {cropTypes[tileInfo.cropType].name}
+                                                {cropTypes[tileInfo.cropType].component({size: 36, stage: 3})} {cropTypes[tileInfo.cropType].name}
                                             </span> planted on this tile.
                                         </p>
                                         
-                                        <p>Status: {tileInfo.isReady ? 'Ready to Harvest! 🌟' : tileInfo.isWatered ? 'Growing... 🌱' : 'Needs Water 💧'}</p>
+                                        <p>Status: {tileInfo.isReady ? 'Ready to Harvest! 🌟' : tileInfo.isWatered ? 'Growing... 🌱' : 'Needs Water'} 
+                                            {!tileInfo.isWatered && <WaterBucket size={28} />}
+                                        </p>
                                         
                                         {tileInfo.isWatered && !tileInfo.isReady && (
                                             <div>
@@ -444,13 +668,13 @@ const FarmManagerComponent = () => {
                                         )}
                                         
                                         <div className="tile-actions">
-                                            {!tileInfo.isWatered && inventory && inventory.waterBuckets > 0 && (
+                                            {!tileInfo.isWatered && inventory && inventory[ITEM_IDS.WATER_BUCKET] > 0 && (
                                                 <button 
                                                     className="btn btn-water"
                                                     onClick={waterCrop}
                                                     disabled={isWriting || isWatering}
                                                 >
-                                                    <span className="btn-icon">💧</span>
+                                                    <span className="btn-icon"><WaterBucket size={28} /></span>
                                                     Water Crop
                                                 </button>
                                             )}
@@ -461,18 +685,20 @@ const FarmManagerComponent = () => {
                                                     onClick={harvestCrop}
                                                     disabled={isWriting || isHarvesting}
                                                 >
-                                                    <span className="btn-icon">🌾</span>
+                                                    <span className="btn-icon">
+                                                        {cropTypes[tileInfo.cropType].component({size: 28, stage: 3})}
+                                                    </span>
                                                     Harvest Crop
                                                 </button>
                                             )}
                                             
-                                            {!tileInfo.isReady && inventory && inventory.fertilizerCharges > 0 && (
+                                            {!tileInfo.isReady && inventory && inventory[ITEM_IDS.FERTILIZER] > 0 && (
                                                 <button 
                                                     className="btn btn-fertilize"
                                                     onClick={useFertilizer}
                                                     disabled={isWriting || isFertilizing}
                                                 >
-                                                    <span className="btn-icon">🧪</span>
+                                                    <span className="btn-icon"><Fertilizer size={28} /></span>
                                                     Use Fertilizer
                                                 </button>
                                             )}
@@ -489,19 +715,19 @@ const FarmManagerComponent = () => {
                                                     className={`btn ${cropType === 0 ? 'btn-primary' : 'btn-secondary'}`}
                                                     onClick={() => setCropType(0)}
                                                 >
-                                                    🥔 Potato
+                                                    <SeedPacket cropType={0} size={28} /> Potato
                                                 </button>
                                                 <button 
                                                     className={`btn ${cropType === 1 ? 'btn-primary' : 'btn-secondary'}`}
                                                     onClick={() => setCropType(1)}
                                                 >
-                                                    🍅 Tomato
+                                                    <SeedPacket cropType={1} size={28} /> Tomato
                                                 </button>
                                                 <button 
                                                     className={`btn ${cropType === 2 ? 'btn-primary' : 'btn-secondary'}`}
                                                     onClick={() => setCropType(2)}
                                                 >
-                                                    🍓 Strawberry
+                                                    <SeedPacket cropType={2} size={28} /> Strawberry
                                                 </button>
                                             </div>
                                             
@@ -528,7 +754,7 @@ const FarmManagerComponent = () => {
                                                     (cropType === 2 && (!inventory || inventory.strawberrySeeds === 0))
                                                 }
                                             >
-                                                <span className="btn-icon">🌱</span>
+                                                <span className="btn-icon"><SeedPacket cropType={cropType} size={28} /></span>
                                                 Plant {cropTypes[cropType].name} Seeds
                                             </button>
                                         </div>

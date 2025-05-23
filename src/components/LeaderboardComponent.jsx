@@ -1,19 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { useAccount, useReadContract } from "wagmi";
-import LeaderboardABI from '../../contracts/abis/leaderboard-abi.json';
-import PlayerRegistryABI from '../../contracts/abis/playerregistry-abi.json';
-import { Trophy, CropsToken } from '../assets/FarmIcons';
+import PlayerLeaderboardABI from '../abis/PlayerLeaderboard.abi.json';
+import PlayerRegistryInventoryABI from '../abis/PlayerRegistryInventory.abi.json';
+import { CropsToken, Trophy } from '../assets/ItemImages';
 import { useProgress } from '../context/ProgressContext';
-
-const CONTRACT_ADDRESSES = {
-    playerRegistry: "0x117f6cdF4f0a03A2fCA6e505D2b72ecec1eF3eDE",
-    leaderboard: "0x2Cef48866f2490d3C9Dd5862072fF67405bA110f",
-};
+import { CONTRACT_ADDRESSES } from '../constants/contractAddresses';
 
 // Function to truncate addresses for display
 const truncateAddress = (address) => {
     if (!address) return '';
     return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+};
+
+// Helper function to convert hex color to RGB
+const hexToRgb = (hex) => {
+    // Remove # if present
+    hex = hex.replace(/^#/, '');
+    
+    // Parse the hex values
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    
+    return `${r}, ${g}, ${b}`;
+};
+
+// Helper function to adjust color brightness
+const adjustColor = (color, amount) => {
+    // Remove # if present
+    color = color.replace(/^#/, '');
+    
+    // Parse the hex values
+    let r = parseInt(color.substring(0, 2), 16);
+    let g = parseInt(color.substring(2, 4), 16);
+    let b = parseInt(color.substring(4, 6), 16);
+    
+    // Adjust each component
+    r = Math.max(0, Math.min(255, r + amount));
+    g = Math.max(0, Math.min(255, g + amount));
+    b = Math.max(0, Math.min(255, b + amount));
+    
+    // Convert back to hex
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 };
 
 // Define rank medal components
@@ -92,32 +120,82 @@ const LeaderboardComponent = () => {
     const [loading, setLoading] = useState(true);
 
     const { data: pointsData } = useReadContract({
-        address: CONTRACT_ADDRESSES.leaderboard,
-        abi: LeaderboardABI,
+        address: CONTRACT_ADDRESSES.PlayerLeaderboard,
+        abi: PlayerLeaderboardABI,
         functionName: 'getPlayerPoints',
         args: [address],
         enabled: !!address,
     });
 
-    const { data: rankData } = useReadContract({
-        address: CONTRACT_ADDRESSES.leaderboard,
-        abi: LeaderboardABI,
+    // Get player's rank directly from the contract
+    const { data: playerRankData, refetch: refetchPlayerRank } = useReadContract({
+        address: CONTRACT_ADDRESSES.PlayerLeaderboard,
+        abi: PlayerLeaderboardABI,
         functionName: 'getPlayerRank',
         args: [address],
         enabled: !!address,
     });
 
-    const { data: countData } = useReadContract({
-        address: CONTRACT_ADDRESSES.leaderboard,
-        abi: LeaderboardABI,
-        functionName: 'getPlayerCount',
+    // Get total leaderboard size
+    const { data: leaderboardSizeData, refetch: refetchLeaderboardSize } = useReadContract({
+        address: CONTRACT_ADDRESSES.PlayerLeaderboard,
+        abi: PlayerLeaderboardABI,
+        functionName: 'getLeaderboardSize',
+        enabled: true,
     });
 
+    // Get top players from the contract
     const { data: topPlayersData, refetch: refetchTopPlayers } = useReadContract({
-        address: CONTRACT_ADDRESSES.leaderboard,
-        abi: LeaderboardABI,
+        address: CONTRACT_ADDRESSES.PlayerLeaderboard,
+        abi: PlayerLeaderboardABI,
         functionName: 'getTopPlayers',
-        args: [10],
+        args: [10], // Get top 10 players
+        enabled: true,
+    });
+
+    // Using getCurrentPlayerTier to determine rank
+    const { data: tierData } = useReadContract({
+        address: CONTRACT_ADDRESSES.PlayerLeaderboard,
+        abi: PlayerLeaderboardABI,
+        functionName: 'getCurrentPlayerTier',
+        args: [address],
+        enabled: !!address,
+    });
+
+    // Get tier thresholds to determine progress to next tier
+    const { data: beginnerThreshold } = useReadContract({
+        address: CONTRACT_ADDRESSES.PlayerLeaderboard,
+        abi: PlayerLeaderboardABI,
+        functionName: 'tierPointThresholds',
+        args: [0], // BEGINNER tier
+    });
+
+    const { data: intermediateThreshold } = useReadContract({
+        address: CONTRACT_ADDRESSES.PlayerLeaderboard,
+        abi: PlayerLeaderboardABI,
+        functionName: 'tierPointThresholds',
+        args: [1], // INTERMEDIATE tier
+    });
+
+    const { data: expertThreshold } = useReadContract({
+        address: CONTRACT_ADDRESSES.PlayerLeaderboard,
+        abi: PlayerLeaderboardABI,
+        functionName: 'tierPointThresholds',
+        args: [2], // EXPERT tier
+    });
+
+    const { data: masterThreshold } = useReadContract({
+        address: CONTRACT_ADDRESSES.PlayerLeaderboard,
+        abi: PlayerLeaderboardABI,
+        functionName: 'tierPointThresholds',
+        args: [3], // MASTER tier
+    });
+
+    const { data: legendaryThreshold } = useReadContract({
+        address: CONTRACT_ADDRESSES.PlayerLeaderboard,
+        abi: PlayerLeaderboardABI,
+        functionName: 'tierPointThresholds',
+        args: [4], // LEGENDARY tier
     });
 
     // Load nicknames for top players
@@ -137,14 +215,14 @@ const LeaderboardComponent = () => {
                     if (newNicknames[addr]) continue;
                     
                     const { data } = await useReadContract.fetch({
-                        address: CONTRACT_ADDRESSES.playerRegistry,
-                        abi: PlayerRegistryABI,
-                        functionName: 'getPlayer',
+                        address: CONTRACT_ADDRESSES.PlayerRegistryInventory,
+                        abi: PlayerRegistryInventoryABI,
+                        functionName: 'getPlayerProfile',
                         args: [addr],
                     });
                     
-                    if (data && data[0]) {
-                        newNicknames[addr] = data[0];
+                    if (data && data.nickname) {
+                        newNicknames[addr] = data.nickname;
                     }
                 } catch (error) {
                     console.error(`Error fetching nickname for ${addr}:`, error);
@@ -160,32 +238,49 @@ const LeaderboardComponent = () => {
         }
     }, [topPlayersData]);
 
+    // Process the data when it changes
     useEffect(() => {
         if (pointsData) setPlayerPoints(Number(pointsData));
-        if (rankData) setPlayerRank(Number(rankData));
-        if (countData) setPlayerCount(Number(countData));
-
-        if (topPlayersData) {
+        if (playerRankData !== undefined) setPlayerRank(Number(playerRankData));
+        if (leaderboardSizeData !== undefined) setPlayerCount(Number(leaderboardSizeData));
+        
+        // Process top players data from the contract
+        if (topPlayersData && topPlayersData[0] && topPlayersData[1]) {
             const addresses = topPlayersData[0];
             const points = topPlayersData[1];
-
-            const playersWithPoints = addresses.map((addr, index) => ({
-                address: addr,
+            
+            const processedTopPlayers = addresses.map((address, index) => ({
+                address,
                 points: Number(points[index])
             }));
-
-            setTopPlayers(playersWithPoints);
+            
+            setTopPlayers(processedTopPlayers);
         }
-    }, [pointsData, rankData, countData, topPlayersData]);
+    }, [pointsData, playerRankData, leaderboardSizeData, topPlayersData]);
 
     // Refresh leaderboard data every minute
     useEffect(() => {
         const interval = setInterval(() => {
             refetchTopPlayers();
+            refetchPlayerRank();
+            refetchLeaderboardSize();
         }, 60000);
         
         return () => clearInterval(interval);
-    }, [refetchTopPlayers]);
+    }, [refetchTopPlayers, refetchPlayerRank, refetchLeaderboardSize]);
+
+    // Convert tier to rank (lower tier number = higher rank)
+    const getTierName = (tier) => {
+        switch(Number(tier)) {
+            case 0: return "BEGINNER";
+            case 1: return "INTERMEDIATE";
+            case 2: return "EXPERT";
+            case 3: return "MASTER";
+            case 4: return "LEGENDARY";
+            case 5: return "EPOCHAL";
+            default: return "UNKNOWN";
+        }
+    };
 
     if (!address) return (
         <div className="card animate-fade-in">
@@ -732,21 +827,140 @@ const LeaderboardComponent = () => {
                     <div className="bg-container p-md rounded-md">
                         <div className="font-bold">Farming Activities</div>
                         <ul className="list-disc pl-lg mt-xs">
-                            <li>Planting crops: 10 points</li>
-                            <li>Watering crops: 5 points</li>
-                            <li>Harvesting crops: 15 points</li>
+                            <li>Planting crops: 5 points</li>
+                            <li>Watering crops: 7 points</li>
+                            <li>Harvesting crops: 10 points</li>
                             <li>Using fertilizer: 8 points</li>
                         </ul>
                     </div>
                     <div className="bg-container p-md rounded-md">
-                        <div className="font-bold">Shop Activities</div>
+                        <div className="font-bold">Other Activities</div>
                         <ul className="list-disc pl-lg mt-xs">
-                            <li>Buying seeds: 5 points</li>
-                            <li>Buying water bucket: 5 points</li>
-                            <li>Buying fertilizer: 10 points</li>
-                            <li>Buying a new tile: 20 points</li>
+                            <li>Buying items: 7 points</li>
+                            <li>Buying a new tile: 15 points</li>
+                            <li>Crafting items: 9 points</li>
+                            <li>Achievements: Bonus points!</li>
                         </ul>
                     </div>
+                </div>
+            </div>
+            
+            <div className="card mt-lg">
+                <h3>Achievement Tiers</h3>
+                <p className="text-secondary mt-sm">Earn points to unlock higher farming tiers with special rewards!</p>
+                
+                <div className="mt-md">
+                    {[
+                        { tier: "BEGINNER", threshold: beginnerThreshold ? Number(beginnerThreshold) : 0, color: "#4CAF50", emoji: "🌱" },
+                        { tier: "INTERMEDIATE", threshold: intermediateThreshold ? Number(intermediateThreshold) : 501, color: "#2196F3", emoji: "🌿" },
+                        { tier: "EXPERT", threshold: expertThreshold ? Number(expertThreshold) : 1501, color: "#9C27B0", emoji: "🌾" },
+                        { tier: "MASTER", threshold: masterThreshold ? Number(masterThreshold) : 3001, color: "#FF9800", emoji: "🏆" },
+                        { tier: "LEGENDARY", threshold: legendaryThreshold ? Number(legendaryThreshold) : 6001, color: "#F44336", emoji: "👑" },
+                        { tier: "EPOCHAL", threshold: 10001, color: "#FFD700", emoji: "⚡" }
+                    ].map((tier, index) => {
+                        const isCurrentTier = tierData !== undefined && Number(tierData) === index;
+                        const isUnlocked = playerPoints >= tier.threshold;
+                        
+                        return (
+                            <div 
+                                key={tier.tier}
+                                style={{
+                                    background: isCurrentTier ? `linear-gradient(to right, rgba(${hexToRgb(tier.color)}, 0.2), rgba(${hexToRgb(tier.color)}, 0.1))` : 'rgba(255,255,255,0.05)',
+                                    borderRadius: '8px',
+                                    padding: '0.75rem 1rem',
+                                    marginBottom: '0.75rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    border: isCurrentTier ? `1px solid ${tier.color}` : '1px solid rgba(255,255,255,0.1)',
+                                    position: 'relative',
+                                    overflow: 'hidden'
+                                }}
+                            >
+                                <div style={{
+                                    width: '40px',
+                                    height: '40px',
+                                    borderRadius: '50%',
+                                    background: `linear-gradient(135deg, ${tier.color}, ${adjustColor(tier.color, -30)})`,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '1.25rem',
+                                    marginRight: '1rem',
+                                    opacity: isUnlocked ? 1 : 0.5,
+                                    filter: isUnlocked ? 'none' : 'grayscale(80%)'
+                                }}>
+                                    {tier.emoji}
+                                </div>
+                                
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ 
+                                        fontWeight: 'bold',
+                                        color: isCurrentTier ? tier.color : (isUnlocked ? 'white' : 'rgba(255,255,255,0.6)'),
+                                        display: 'flex',
+                                        alignItems: 'center'
+                                    }}>
+                                        {tier.tier}
+                                        {isCurrentTier && (
+                                            <span style={{
+                                                marginLeft: '0.5rem',
+                                                fontSize: '0.75rem',
+                                                padding: '0.1rem 0.5rem',
+                                                background: tier.color,
+                                                color: 'white',
+                                                borderRadius: '99px'
+                                            }}>CURRENT</span>
+                                        )}
+                                    </div>
+                                    <div style={{ 
+                                        fontSize: '0.85rem',
+                                        color: 'rgba(255,255,255,0.6)'
+                                    }}>
+                                        {tier.threshold.toLocaleString()} points required
+                                    </div>
+                                </div>
+                                
+                                {/* Progress bar */}
+                                {!isUnlocked && (
+                                    <div style={{
+                                        width: '100px',
+                                        marginLeft: '1rem'
+                                    }}>
+                                        <div style={{
+                                            height: '6px',
+                                            background: 'rgba(255,255,255,0.1)',
+                                            borderRadius: '3px',
+                                            overflow: 'hidden'
+                                        }}>
+                                            <div style={{
+                                                height: '100%',
+                                                width: `${Math.min(100, Math.max(0, (playerPoints / tier.threshold) * 100))}%`,
+                                                background: tier.color,
+                                                borderRadius: '3px'
+                                            }}></div>
+                                        </div>
+                                        <div style={{
+                                            fontSize: '0.75rem',
+                                            color: 'rgba(255,255,255,0.5)',
+                                            textAlign: 'right',
+                                            marginTop: '0.25rem'
+                                        }}>
+                                            {Math.round((playerPoints / tier.threshold) * 100)}%
+                                        </div>
+                                    </div>
+                                )}
+                                
+                                {/* Status */}
+                                <div style={{
+                                    marginLeft: '1rem',
+                                    fontSize: '0.85rem',
+                                    fontWeight: 'bold',
+                                    color: isUnlocked ? tier.color : 'rgba(255,255,255,0.4)'
+                                }}>
+                                    {isUnlocked ? '✅ UNLOCKED' : '🔒 LOCKED'}
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </div>

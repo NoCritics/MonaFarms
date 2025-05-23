@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useProgress } from '../context/ProgressContext';
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import PlayerRegistryABI from '../../contracts/abis/playerregistry-abi.json';
+import PlayerRegistryInventoryABI from '../abis/PlayerRegistryInventory.abi.json';
+import { CONTRACT_ADDRESSES } from '../constants/contractAddresses';
 
 // Import new profile components
 import FarmHistoryTimeline from './profile/FarmHistoryTimeline';
 import AchievementGallery from './profile/AchievementGallery';
 import StatsCharts from './profile/StatsCharts';
 import SocialShareCard from './profile/SocialShareCard';
-
-const CONTRACT_ADDRESSES = {
-    playerRegistry: "0x117f6cdF4f0a03A2fCA6e505D2b72ecec1eF3eDE",
-};
 
 // Define available avatar options
 const avatarOptions = [
@@ -46,34 +43,49 @@ const PlayerRegistryComponent = () => {
     const [profileSection, setProfileSection] = useState('overview');
 
     const { data: isRegistered } = useReadContract({
-        address: CONTRACT_ADDRESSES.playerRegistry,
-        abi: PlayerRegistryABI,
+        address: CONTRACT_ADDRESSES.PlayerRegistryInventory,
+        abi: PlayerRegistryInventoryABI,
         functionName: 'isPlayerRegistered',
         args: [address],
         enabled: !!address,
     });
 
-    const { data: playerData, refetch: refetchPlayerData } = useReadContract({
-        address: CONTRACT_ADDRESSES.playerRegistry,
-        abi: PlayerRegistryABI,
-        functionName: 'getPlayer',
+    const { data: playerProfile, refetch: refetchPlayerData } = useReadContract({
+        address: CONTRACT_ADDRESSES.PlayerRegistryInventory,
+        abi: PlayerRegistryInventoryABI,
+        functionName: 'getPlayerProfile',
         args: [address],
-        enabled: !!address && isRegistered,
+        enabled: !!address,
+    });
+    
+    // Get water buckets count from player inventory
+    const { data: waterBuckets, refetch: refetchWaterBuckets } = useReadContract({
+        address: CONTRACT_ADDRESSES.PlayerRegistryInventory,
+        abi: PlayerRegistryInventoryABI,
+        functionName: 'getPlayerInventoryItemBalance',
+        args: [address, 1], // Use correct ItemID for WATER_BUCKET (1 as per contract)
+        enabled: !!address && !!playerProfile, // Only fetch after profile is loaded
     });
 
     useEffect(() => {
-        if (playerData) {
+        if (playerProfile) {
             setPlayerDetails({
-                nickname: playerData[0],
-                registrationTime: Number(playerData[1]),
-                exists: playerData[2],
-                waterBuckets: Number(playerData[3]),
-                initialSeedType: Number(playerData[4]),
-                initialSeedCount: Number(playerData[5]),
-                ownedTiles: Number(playerData[6])
+                nickname: playerProfile.nickname,
+                registrationTime: Number(playerProfile.registrationTime || 0),
+                exists: true,
+                waterBuckets: Number(waterBuckets || 0),
+                farmTilesCount: Number(playerProfile.farmTilesCount),
+                ownedTiles: Number(playerProfile.farmTilesCount),
+                tier: Number(playerProfile.currentTier),
+                irrigationSystemTier: Number(playerProfile.irrigationSystemTier),
+                greenhouseTier: Number(playerProfile.greenhouseTier),
+                seedSaverTier: Number(playerProfile.seedSaverTier),
+                richSoilTier: Number(playerProfile.richSoilTier),
+                hasGoldenEmblem: playerProfile.hasGoldenEmblem,
+                hasPlatinumEmblem: playerProfile.hasPlatinumEmblem
             });
         }
-    }, [playerData]);
+    }, [playerProfile, waterBuckets]);
 
     const { writeContractAsync: registerPlayer, isPending: isRegistering } = useWriteContract();
 
@@ -81,17 +93,36 @@ const PlayerRegistryComponent = () => {
         if (!nickname) return;
         try {
             await registerPlayer({
-                address: CONTRACT_ADDRESSES.playerRegistry,
-                abi: PlayerRegistryABI,
+                address: CONTRACT_ADDRESSES.PlayerRegistryInventory,
+                abi: PlayerRegistryInventoryABI,
                 functionName: 'registerPlayer',
                 args: [nickname]
             });
             setNickname("");
+            
+            // Reload the page after registration to get a fresh state
+            alert("Registration successful! Please wait while your farm is being prepared...");
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000); // Give the blockchain a moment to process
+            
         } catch (error) {
             console.error("Registration error:", error);
             alert("Registration failed: " + error.message);
         }
     };
+
+    // Add debug logs to check registration status
+    useEffect(() => {
+        console.log("Registration status check:");
+        console.log("- isRegistered:", isRegistered);
+        console.log("- playerProfile exists:", !!playerProfile);
+        console.log("- playerProfile:", playerProfile);
+        console.log("- isActuallyRegistered:", !!playerProfile);
+    }, [isRegistered, playerProfile]);
+    
+    // Use this to determine if player is actually registered
+    const isActuallyRegistered = !!playerProfile;
 
     const { writeContractAsync: updateNicknameFunc, isPending: isUpdating } = useWriteContract();
 
@@ -99,8 +130,8 @@ const PlayerRegistryComponent = () => {
         if (!newNickname) return;
         try {
             await updateNicknameFunc({
-                address: CONTRACT_ADDRESSES.playerRegistry,
-                abi: PlayerRegistryABI,
+                address: CONTRACT_ADDRESSES.PlayerRegistryInventory,
+                abi: PlayerRegistryInventoryABI,
                 functionName: 'updateNickname',
                 args: [newNickname]
             });
@@ -239,7 +270,7 @@ const PlayerRegistryComponent = () => {
                 )}
             </div>
 
-            {isRegistered ? (
+            {isActuallyRegistered ? (
                 <>
                     {/* Add new tab for History */}
                     {profileSection === 'history' && playerDetails && (
@@ -330,9 +361,6 @@ const PlayerRegistryComponent = () => {
                                                 alignItems: 'center',
                                                 gap: '0.5rem'
                                             }}>
-                                                <span role="img" aria-label="calendar">📅</span> 
-                                                Joined {new Date(playerDetails.registrationTime * 1000).toLocaleDateString()}
-                                                <span style={{ fontWeight: 'bold', marginLeft: '0.5rem' }}>•</span>
                                                 <span>{formatTimeSpan(playerDetails.registrationTime)} of farming</span>
                                             </p>
                                         </div>
@@ -393,10 +421,11 @@ const PlayerRegistryComponent = () => {
                                             textAlign: 'center'
                                         }}>
                                             <div style={{ fontSize: '1.5rem' }}>
-                                                {playerDetails.initialSeedType === 0 ? '🥔' : 
-                                                 playerDetails.initialSeedType === 1 ? '🍅' : '🍓'}
+                                                {playerDetails.tier === 1 ? '🥔' : 
+                                                 playerDetails.tier === 2 ? '🍅' : 
+                                                 playerDetails.tier === 3 ? '🍓' : '🌱'}
                                             </div>
-                                            <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)' }}>Starter Seeds</div>
+                                            <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)' }}>Player Tier</div>
                                         </div>
                                         
                                         <div style={{

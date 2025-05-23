@@ -73,6 +73,20 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.resource-icon:hover {
+  transform: scale(1.1);
+}
+
+.item-image-container {
+  transition: all 0.3s ease;
+}
+
+.resource-item:hover .item-image-container {
+  box-shadow: 0 0 8px rgba(247, 181, 56, 0.6);
+  border-color: rgba(247, 181, 56, 0.8);
 }
 
 .resource-info {
@@ -185,4 +199,25 @@
     opacity: 1;
     pointer-events: auto;
   }
+}
+
+/* Add pulse animation for resource changes */
+@keyframes resource-increase-pulse {
+  0% { color: var(--color-text-primary); }
+  50% { color: var(--color-success); }
+  100% { color: var(--color-text-primary); }
+}
+
+@keyframes resource-decrease-pulse {
+  0% { color: var(--color-text-primary); }
+  50% { color: var(--color-error); }
+  100% { color: var(--color-text-primary); }
+}
+
+.resource-increase {
+  animation: resource-increase-pulse 1.5s ease;
+}
+
+.resource-decrease {
+  animation: resource-decrease-pulse 1.5s ease;
 }

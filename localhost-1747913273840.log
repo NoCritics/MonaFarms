@@ -1,0 +1,308 @@
+inject.js:1 Port connected
+inject.js:1 Port connected
+inpage.js:1 Uncaught TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at c (inpage.js:1:44560)
+    at r.initializeProvider (inpage.js:1:44271)
+    at Object.<anonymous> (inpage.js:1:2103)
+    at Object.<anonymous> (inpage.js:1:5958)
+    at 2.../../shared/modules/provider-injection (inpage.js:1:5971)
+    at i (inpage.js:1:254)
+    at e (inpage.js:1:414)
+    at inpage.js:1:431
+content.js:2 Check phishing by URL: Passed.
+secp256k1-xQ_MRlLs.js:53 using deprecated parameters for the initialization function; pass a single object instead
+Da @ secp256k1-xQ_MRlLs.js:53
+content-b9655991.js:1 Port connected
+injected.js:1 Backpack couldn't override `window.ethereum`.
+Hxs @ injected.js:1
+chunk-LFSPC6AQ.js?v=ac4191d5:21580 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+inject.js:1 Port connected
+inject.js:1 Port connected
+inpage.js:1 Uncaught TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at c (inpage.js:1:44560)
+    at r.initializeProvider (inpage.js:1:44271)
+    at Object.<anonymous> (inpage.js:1:2103)
+    at Object.<anonymous> (inpage.js:1:5958)
+    at 2.../../shared/modules/provider-injection (inpage.js:1:5971)
+    at i (inpage.js:1:254)
+    at e (inpage.js:1:414)
+    at inpage.js:1:431
+content.js:2 Check phishing by URL: Passed.
+content-b9655991.js:1 Port connected
+secp256k1-xQ_MRlLs.js:53 Uncaught (in promise) CompileError: WebAssembly.Module(): 
+    at cd (secp256k1-xQ_MRlLs.js:53:106078)
+    at hd (secp256k1-xQ_MRlLs.js:53:106168)
+    at Sa (secp256k1-xQ_MRlLs.js:53:143064)
+    at secp256k1-xQ_MRlLs.js:53:143070
+injected.js:1 Backpack couldn't override `window.ethereum`.
+Hxs @ injected.js:1
+script.js:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+2947-6af19bf3b9533e09.js:1 [Vercel Web Analytics] Failed to load script from /_vercel/insights/script.js. Be sure to enable Web Analytics for your project and deploy again. See https://vercel.com/docs/analytics/quickstart for more information.
+timeOracleService.js?t=1747830051214:26 Error fetching current timestamp: TypeError: Cannot destructure property 'chainId' of 'parameters' as it is undefined.
+    at readContract2 (chunk-XUQ5XSQK.js?v=ac4191d5:570:11)
+    at Object.getCurrentTimestamp (timeOracleService.js?t=1747830051214:17:24)
+    at fetchCurrentTime (FarmManagerWrapper.jsx:156:54)
+    at FarmManagerWrapper.jsx:165:9
+    at commitHookEffectListMount (chunk-LFSPC6AQ.js?v=ac4191d5:16936:34)
+    at commitPassiveMountOnFiber (chunk-LFSPC6AQ.js?v=ac4191d5:18184:19)
+    at commitPassiveMountEffects_complete (chunk-LFSPC6AQ.js?v=ac4191d5:18157:17)
+    at commitPassiveMountEffects_begin (chunk-LFSPC6AQ.js?v=ac4191d5:18147:15)
+    at commitPassiveMountEffects (chunk-LFSPC6AQ.js?v=ac4191d5:18137:11)
+    at flushPassiveEffectsImpl (chunk-LFSPC6AQ.js?v=ac4191d5:19518:11)
+getCurrentTimestamp @ timeOracleService.js?t=1747830051214:26
+timeOracleService.js?t=1747830051214:26 Error fetching current timestamp: TypeError: Cannot destructure property 'chainId' of 'parameters' as it is undefined.
+    at readContract2 (chunk-XUQ5XSQK.js?v=ac4191d5:570:11)
+    at Object.getCurrentTimestamp (timeOracleService.js?t=1747830051214:17:24)
+    at fetchCurrentTime (FarmManagerWrapper.jsx:156:54)
+    at FarmManagerWrapper.jsx:165:9
+    at commitHookEffectListMount (chunk-LFSPC6AQ.js?v=ac4191d5:16936:34)
+    at invokePassiveEffectMountInDEV (chunk-LFSPC6AQ.js?v=ac4191d5:18352:19)
+    at invokeEffectsInDev (chunk-LFSPC6AQ.js?v=ac4191d5:19729:19)
+    at commitDoubleInvokeEffectsInDEV (chunk-LFSPC6AQ.js?v=ac4191d5:19714:15)
+    at flushPassiveEffectsImpl (chunk-LFSPC6AQ.js?v=ac4191d5:19531:13)
+    at flushPassiveEffects (chunk-LFSPC6AQ.js?v=ac4191d5:19475:22)
+getCurrentTimestamp @ timeOracleService.js?t=1747830051214:26
+testnet-rpc.monad.xyz/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 429 ()
+testnet-rpc.monad.xyz/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 429 ()
+testnet-rpc.monad.xyz/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 429 ()
+FarmManagerWrapper.jsx:225 Error fetching all farm tiles: TypeError: useReadContract.fetch is not a function
+    at fetchAllFarmTiles (FarmManagerWrapper.jsx:201:60)
+    at FarmManagerWrapper.jsx:233:13
+    at commitHookEffectListMount (chunk-LFSPC6AQ.js?v=ac4191d5:16936:34)
+    at commitPassiveMountOnFiber (chunk-LFSPC6AQ.js?v=ac4191d5:18184:19)
+    at commitPassiveMountEffects_complete (chunk-LFSPC6AQ.js?v=ac4191d5:18157:17)
+    at commitPassiveMountEffects_begin (chunk-LFSPC6AQ.js?v=ac4191d5:18147:15)
+    at commitPassiveMountEffects (chunk-LFSPC6AQ.js?v=ac4191d5:18137:11)
+    at flushPassiveEffectsImpl (chunk-LFSPC6AQ.js?v=ac4191d5:19518:11)
+    at flushPassiveEffects (chunk-LFSPC6AQ.js?v=ac4191d5:19475:22)
+    at chunk-LFSPC6AQ.js?v=ac4191d5:19356:17
+fetchAllFarmTiles @ FarmManagerWrapper.jsx:225
+chunk-LFSPC6AQ.js?v=ac4191d5:16691 Uncaught TypeError: plantableSeedsData[0].forEach is not a function
+    at FarmManagerWrapper.jsx:252:35
+    at commitHookEffectListMount (chunk-LFSPC6AQ.js?v=ac4191d5:16936:34)
+    at commitPassiveMountOnFiber (chunk-LFSPC6AQ.js?v=ac4191d5:18184:19)
+    at commitPassiveMountEffects_complete (chunk-LFSPC6AQ.js?v=ac4191d5:18157:17)
+    at commitPassiveMountEffects_begin (chunk-LFSPC6AQ.js?v=ac4191d5:18147:15)
+    at commitPassiveMountEffects (chunk-LFSPC6AQ.js?v=ac4191d5:18137:11)
+    at flushPassiveEffectsImpl (chunk-LFSPC6AQ.js?v=ac4191d5:19518:11)
+    at flushPassiveEffects (chunk-LFSPC6AQ.js?v=ac4191d5:19475:22)
+    at commitRootImpl (chunk-LFSPC6AQ.js?v=ac4191d5:19444:13)
+    at commitRoot (chunk-LFSPC6AQ.js?v=ac4191d5:19305:13)
+chunk-LFSPC6AQ.js?v=ac4191d5:14052 The above error occurred in the <FarmManagerWrapper> component:
+
+    at FarmManagerWrapper (http://localhost:5173/src/components/farm/FarmManagerWrapper.jsx?t=1747913035059:107:23)
+    at div
+    at div
+    at div
+    at div
+    at MainContent (http://localhost:5173/src/App.jsx?t=1747913035059:37:37)
+    at DragDropProvider (http://localhost:5173/src/components/ui/DragDropContext.jsx:25:36)
+    at ProgressProvider (http://localhost:5173/src/context/ProgressContext.jsx:26:36)
+    at NotificationProvider (http://localhost:5173/src/components/notifications/NotificationSystem.jsx:26:40)
+    at App
+    at Le (http://localhost:5173/node_modules/.vite/deps/connectkit.js?v=ac4191d5:13874:42)
+    at Web3ContextProvider (http://localhost:5173/node_modules/.vite/deps/connectkit.js?v=ac4191d5:50592:30)
+    at ConnectKitProvider (http://localhost:5173/node_modules/.vite/deps/connectkit.js?v=ac4191d5:54079:29)
+    at QueryClientProvider (http://localhost:5173/node_modules/.vite/deps/chunk-PR5QFULQ.js?v=ac4191d5:2896:3)
+    at Hydrate (http://localhost:5173/node_modules/.vite/deps/chunk-ZA474KGF.js?v=ac4191d5:243:11)
+    at WagmiProvider (http://localhost:5173/node_modules/.vite/deps/chunk-ZA474KGF.js?v=ac4191d5:267:11)
+    at Web3Provider (http://localhost:5173/src/Web3Provider.jsx?t=1747819862793:69:32)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+logCapturedError @ chunk-LFSPC6AQ.js?v=ac4191d5:14052
+chunk-LFSPC6AQ.js?v=ac4191d5:9145 Uncaught TypeError: plantableSeedsData[0].forEach is not a function
+    at FarmManagerWrapper.jsx:252:35
+    at commitHookEffectListMount (chunk-LFSPC6AQ.js?v=ac4191d5:16936:34)
+    at commitPassiveMountOnFiber (chunk-LFSPC6AQ.js?v=ac4191d5:18184:19)
+    at commitPassiveMountEffects_complete (chunk-LFSPC6AQ.js?v=ac4191d5:18157:17)
+    at commitPassiveMountEffects_begin (chunk-LFSPC6AQ.js?v=ac4191d5:18147:15)
+    at commitPassiveMountEffects (chunk-LFSPC6AQ.js?v=ac4191d5:18137:11)
+    at flushPassiveEffectsImpl (chunk-LFSPC6AQ.js?v=ac4191d5:19518:11)
+    at flushPassiveEffects (chunk-LFSPC6AQ.js?v=ac4191d5:19475:22)
+    at commitRootImpl (chunk-LFSPC6AQ.js?v=ac4191d5:19444:13)
+    at commitRoot (chunk-LFSPC6AQ.js?v=ac4191d5:19305:13)
+testnet-rpc.monad.xyz/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 429 ()
+testnet-rpc.monad.xyz/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 429 ()
+testnet-rpc.monad.xyz/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 429 ()
+testnet-rpc.monad.xyz/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 429 ()
+testnet-rpc.monad.xyz/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 429 ()
+testnet-rpc.monad.xyz/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 429 ()
+testnet-rpc.monad.xyz/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 429 ()
+testnet-rpc.monad.xyz/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 429 ()
+testnet-rpc.monad.xyz/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 429 ()
+testnet-rpc.monad.xyz/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 429 ()
+itemRegistryService.js?t=1747852401055:103 Error fetching crop data for ID 0: ContractFunctionExecutionError: HTTP request failed.
+
+Status: 429
+URL: https://testnet-rpc.monad.xyz
+Request body: {"method":"eth_call","params":[{"data":"0x806a5eb50000000000000000000000000000000000000000000000000000000000000000","to":"0x8746760eD117927BfD2f429031D677960c968B9f"},"latest"]}
+ 
+Raw Call Arguments:
+  to:    0x8746760eD117927BfD2f429031D677960c968B9f
+  data:  0x806a5eb50000000000000000000000000000000000000000000000000000000000000000
+ 
+Contract Call:
+  address:   0x8746760eD117927BfD2f429031D677960c968B9f
+  function:  getCropData(uint8 id)
+  args:                 (0)
+
+Docs: https://viem.sh/docs/contract/readContract
+Details: {"code":-32011,"message":"request limit reached"}
+Version: viem@2.25.0
+    at getContractError (chunk-WR5J3GGH.js?v=ac4191d5:294:10)
+    at readContract (chunk-WR5J3GGH.js?v=ac4191d5:1089:11)
+    at async Object.getCropData (itemRegistryService.js?t=1747852401055:82:18)
+    at async fetchAllCropData (FarmManagerWrapper.jsx:180:38)Caused by: CallExecutionError: HTTP request failed.
+
+Status: 429
+URL: https://testnet-rpc.monad.xyz
+Request body: {"method":"eth_call","params":[{"data":"0x806a5eb50000000000000000000000000000000000000000000000000000000000000000","to":"0x8746760eD117927BfD2f429031D677960c968B9f"},"latest"]}
+ 
+Raw Call Arguments:
+  to:    0x8746760eD117927BfD2f429031D677960c968B9f
+  data:  0x806a5eb50000000000000000000000000000000000000000000000000000000000000000
+
+Details: {"code":-32011,"message":"request limit reached"}
+Version: viem@2.25.0
+    at getCallError (chunk-ONPGU2V5.js?v=ac4191d5:3235:10)
+    at call (chunk-IOA4YYD7.js?v=ac4191d5:1737:11)
+    at async readContract (chunk-WR5J3GGH.js?v=ac4191d5:1077:22)
+    at async Object.getCropData (itemRegistryService.js?t=1747852401055:82:18)
+    at async fetchAllCropData (FarmManagerWrapper.jsx:180:38)Caused by: HttpRequestError: HTTP request failed.
+
+Status: 429
+URL: https://testnet-rpc.monad.xyz
+Request body: {"method":"eth_call","params":[{"data":"0x806a5eb50000000000000000000000000000000000000000000000000000000000000000","to":"0x8746760eD117927BfD2f429031D677960c968B9f"},"latest"]}
+
+Details: {"code":-32011,"message":"request limit reached"}
+Version: viem@2.25.0
+    at Object.request (chunk-WR5J3GGH.js?v=ac4191d5:2392:17)
+    at async fn (chunk-WR5J3GGH.js?v=ac4191d5:2450:11)
+    at async request (chunk-WR5J3GGH.js?v=ac4191d5:2454:37)
+    at async withRetry.delay.count.count (chunk-WR5J3GGH.js?v=ac4191d5:2020:16)
+    at async attemptRetry (chunk-WR5J3GGH.js?v=ac4191d5:1988:22)
+getCropData @ itemRegistryService.js?t=1747852401055:103
+FarmManagerWrapper.jsx:186 Error fetching crop data: ContractFunctionExecutionError: HTTP request failed.
+
+Status: 429
+URL: https://testnet-rpc.monad.xyz
+Request body: {"method":"eth_call","params":[{"data":"0x806a5eb50000000000000000000000000000000000000000000000000000000000000000","to":"0x8746760eD117927BfD2f429031D677960c968B9f"},"latest"]}
+ 
+Raw Call Arguments:
+  to:    0x8746760eD117927BfD2f429031D677960c968B9f
+  data:  0x806a5eb50000000000000000000000000000000000000000000000000000000000000000
+ 
+Contract Call:
+  address:   0x8746760eD117927BfD2f429031D677960c968B9f
+  function:  getCropData(uint8 id)
+  args:                 (0)
+
+Docs: https://viem.sh/docs/contract/readContract
+Details: {"code":-32011,"message":"request limit reached"}
+Version: viem@2.25.0
+    at getContractError (chunk-WR5J3GGH.js?v=ac4191d5:294:10)
+    at readContract (chunk-WR5J3GGH.js?v=ac4191d5:1089:11)
+    at async Object.getCropData (itemRegistryService.js?t=1747852401055:82:18)
+    at async fetchAllCropData (FarmManagerWrapper.jsx:180:38)Caused by: CallExecutionError: HTTP request failed.
+
+Status: 429
+URL: https://testnet-rpc.monad.xyz
+Request body: {"method":"eth_call","params":[{"data":"0x806a5eb50000000000000000000000000000000000000000000000000000000000000000","to":"0x8746760eD117927BfD2f429031D677960c968B9f"},"latest"]}
+ 
+Raw Call Arguments:
+  to:    0x8746760eD117927BfD2f429031D677960c968B9f
+  data:  0x806a5eb50000000000000000000000000000000000000000000000000000000000000000
+
+Details: {"code":-32011,"message":"request limit reached"}
+Version: viem@2.25.0
+    at getCallError (chunk-ONPGU2V5.js?v=ac4191d5:3235:10)
+    at call (chunk-IOA4YYD7.js?v=ac4191d5:1737:11)
+    at async readContract (chunk-WR5J3GGH.js?v=ac4191d5:1077:22)
+    at async Object.getCropData (itemRegistryService.js?t=1747852401055:82:18)
+    at async fetchAllCropData (FarmManagerWrapper.jsx:180:38)Caused by: HttpRequestError: HTTP request failed.
+
+Status: 429
+URL: https://testnet-rpc.monad.xyz
+Request body: {"method":"eth_call","params":[{"data":"0x806a5eb50000000000000000000000000000000000000000000000000000000000000000","to":"0x8746760eD117927BfD2f429031D677960c968B9f"},"latest"]}
+
+Details: {"code":-32011,"message":"request limit reached"}
+Version: viem@2.25.0
+    at Object.request (chunk-WR5J3GGH.js?v=ac4191d5:2392:17)
+    at async fn (chunk-WR5J3GGH.js?v=ac4191d5:2450:11)
+    at async request (chunk-WR5J3GGH.js?v=ac4191d5:2454:37)
+    at async withRetry.delay.count.count (chunk-WR5J3GGH.js?v=ac4191d5:2020:16)
+    at async attemptRetry (chunk-WR5J3GGH.js?v=ac4191d5:1988:22)
+fetchAllCropData @ FarmManagerWrapper.jsx:186
+testnet-rpc.monad.xyz/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 429 ()
+api-js.mixpanel.com/engage/?verbose=1&ip=1&_=1747913266788:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+testnet-rpc.monad.xyz/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 429 ()
+testnet-rpc.monad.xyz/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 429 ()
+page.js:2 Uncaught (in promise) s: The source http://localhost:5173/#farm has not been authorized yet
+    at m (chrome-extension://onhogfjeacnfoofkfgppdlbmlmnplgbn/page.js:2:14576)
+    at chrome-extension://onhogfjeacnfoofkfgppdlbmlmnplgbn/page.js:2:22846
+m @ page.js:2
+(anonymous) @ page.js:2
+postMessage
+onPortMessageHandler @ content.js:2
+page.js:2 Uncaught (in promise) s: The source http://localhost:5173/#farm has not been authorized yet
+    at m (chrome-extension://onhogfjeacnfoofkfgppdlbmlmnplgbn/page.js:2:14576)
+    at chrome-extension://onhogfjeacnfoofkfgppdlbmlmnplgbn/page.js:2:22846
+m @ page.js:2
+(anonymous) @ page.js:2
+postMessage
+onPortMessageHandler @ content.js:2

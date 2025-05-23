@@ -23,6 +23,7 @@ import './components/ui/ContextMenu.css';
 
 // Import Phase 4 styles
 import './styles/profile.css';
+import './styles/crafting.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

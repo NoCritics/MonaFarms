@@ -1,0 +1,89 @@
+AS STATED in CONT-DEF.TXT FOR NOW WE ONLY NEED TO IMPLEMENT THE TIER RANGES (NUMBER OF REQUIRED PTS) AS WELL AS FARM UPGRADES WITHOUT THE ACHIEVEMENTS THEMSELVES, AS THESE ARE PLANNED FOR THE LATEST STAGE OF THE DEVELOPMENT. DUE TO THAT, QUIRCKY AND SEASONAL TIERS TURN INTO LEGENDARY AND EPOCHAL (CHANGE IN NAMES AND SCOPE), ONCE EPOCHAL IS COMPLETE - PLAYER RECEIVES A 2ND PLATINUM COSMETIC EMBLEM SAYING "DIVINE <player's nickname>, THE ASCENDED FARMER". SO NOW ITS BEGINNER-INTERMEDIATE-EXPERT-MASTER-LEGENDARY-EPOCHAL. LEGENDARY = 6001-10000, EPOCHAL = 10001-20000. BOTH EMBLEMS SHOULD BE PERMANENT ELEMENTS ON THE ACCOUNT OF THE PLAYER.
+
+1. 🏆 Achievement System (With Progression Tiers & Rewards)
+🎯 Goals: Structured player motivation, natural game progression, fun milestones.
+
+~~~Beginner Tier~~~ On completion of begginer tier an irrigation system should unlock (tier 1), 0-500 PTS
+
+First Harvest: Complete your first crop harvest, +50 PTS
+
+Seed Collector: Acquire all three basic seed types, +50 PTS
+
+Green Thumb: Successfully water 10 crops, +50 PTS
+
+Land Expander: Fill all initial tiles with crops, +50 PTS
+
+Market Explorer: Make your first shop purchase, +50 PTS
+
+~~~Intermediate Tier~~~ On completion of Intermediate tier an irrigation system should progress (tier 1->tier 2) and a greenhouse upgrade should unlock (tier 1), 501-1500 PTS
+
+Potato King/Queen: Harvest 50 potato crops, +100 PTS
+
+Tomato Enthusiast: Harvest 50 tomato crops, +100 PTS
+
+Strawberry Specialist: Harvest 50 strawberry crops, +100 PTS
+
+Farm Expander: Purchase 5 additional tiles, +100 PTS
+
+Fertilizer Friend: Use fertilizer 20 times, +100 PTS
+
+Hydration Master: Maintain 5 water buckets, +100 PTS
+
+Daily Devotee: Claim faucet 7 days in a row, +100 PTS
+
+Crop Diversifier: Plant every crop 10 times, +100 PTS
+
+~~~Expert Tier~~~ On completion of Expert tier an irrigation system should progress (tier 2->tier 3) and a greenhouse upgrade should progress (tier 1->tier 2) and seedsaver upgrade should unlock (tier 1) and Rich soil upgrade should unlock (tier 1), 1501-3000 PTS
+
+Harvest Legend: 1,000 total crops, +200 PTS
+
+Land Baron: Unlock max 24 tiles, +200 PTS
+ 
+Wealthy Farmer: Hold 10,000 CROPS, +200 PTS
+
+Efficiency Expert: Harvest 20 crops, in 24h +200 PTS
+
+Full Farm: All tiles active, +200 PTS
+
+Self-Sufficient: 100 harvests w/o faucet, +200 PTS
+
+~~~Master Tier~~~ On completion of Master tier an irrigation system should progress(tier 3->tier 4) and a greenhouse upgrade should progress (tier 2->tier 3) and seedsaver upgrade should progress (tier 1->tier 2) and Rich soil upgrade should progress (tier 1->tier 2) 3001-6000 PTS, once complete gain golden cosmetic Emblem - "THE MYTH, THE LEGEND, THE <player's nickname>"
+
+Farming Mogul: 10,000 total crops, +500 PTS
+
+Token Empire: 100,000 CROPS earned, +500 PTS
+
+Dedication Master: Perform actions 30 days in a row, +500 PTS
+
+Exotic Cultivator: Grow every rare crop, +500 PTS
+
+Leaderboard Champion: Reach #1, +500 PTS
+
+~~~Quirky Tier~~~ On completion of all Tiers + quirky tier an irrigation system should stay as is(tier 4) and a greenhouse upgrade should progress (tier 3->tier 4) and seedsaver upgrade should progress (tier 2->tier 3) and Rich soil upgrade should progress (tier 2->tier 3), can be progressed at any time but will unlock upgrades only after completing Master tier.
+
+Night Farmer: Farm at 2–4 AM local, +333 PTS
+
+Impatient Harvester: Try to harvest early 10 times, +333 PTS
+
+Overhydrator: Water watered crops 5 times, +333 PTS
+
+Perfect Balance: Equal count of each seed, +333 PTS
+
+Just-in-Time Harvester: Harvest 5s after maturity, +333 PTS
+
+Rainbow Farm: Alternating crops in all tiles, +333 PTS
+
+~~~Seasonal Tier~~~ On completion of all Tiers + quirky tier + seasonal tier an irrigation system should stay as is(tier 4) and a greenhouse upgrade should stay as is (tier 4) and seedsaver upgrade should progress (tier 3->tier 4) and Rich soil upgrade should progress (tier 3->tier 4), can be progressed at any time but will unlock upgrades only after completing Master + Quircky tier.
+
+Spring Planter: Plant 50 crops in Spring, +200 PTS
+
+Summer Harvester: Harvest 50 in Summer, +200 PTS
+
+Fall Collector: Earn 5,000 CROPS in Fall, +200 PTS
+
+Winter Provider: Maintain 15+ seeds in Winter, +200 PTS
+
+Irrigation - when purchasing water, player get +1 for each tier of irrigation they have, so 6+1 units of water bucket, then 6+2, then 6+3 and 6+4 units of water bucket for the same price of 50 crops. 
+Greenhouse - 5/10/15/20% boost to the growth speed
+Seed saver - when player plants any crop - they have a 5/10/15/20% chance (according to tier) to essentially plant this crop without losing the seeds.
+Rich soil - 5/10/15/20% boost to harvest yield
