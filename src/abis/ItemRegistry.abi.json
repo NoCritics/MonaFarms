@@ -1,0 +1,659 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "initialOwner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "allCropIDs",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "allItemIDs",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.ItemID"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "crops",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "name",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "id",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      },
+      {
+        "name": "seedId",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.ItemID"
+      },
+      {
+        "name": "growTimeSeconds",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "baseYield",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "waterNeeded",
+        "type": "uint8",
+        "internalType": "uint8"
+      },
+      {
+        "name": "isRare",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "purchasePrice",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "requiredTierToBuy",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.AchievementTier"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getAllCropIDs",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8[]",
+        "internalType": "enum GlobalEnumsAndStructs.CropID[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getAllCropNames",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string[]",
+        "internalType": "string[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getAllItemIDs",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8[]",
+        "internalType": "enum GlobalEnumsAndStructs.ItemID[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getAllItemNames",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string[]",
+        "internalType": "string[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getCropData",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct GlobalEnumsAndStructs.CropData",
+        "components": [
+          {
+            "name": "name",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "id",
+            "type": "uint8",
+            "internalType": "enum GlobalEnumsAndStructs.CropID"
+          },
+          {
+            "name": "seedId",
+            "type": "uint8",
+            "internalType": "enum GlobalEnumsAndStructs.ItemID"
+          },
+          {
+            "name": "growTimeSeconds",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "baseYield",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "waterNeeded",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "isRare",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "purchasePrice",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "requiredTierToBuy",
+            "type": "uint8",
+            "internalType": "enum GlobalEnumsAndStructs.AchievementTier"
+          },
+          {
+            "name": "guaranteedItemDrops",
+            "type": "uint8[]",
+            "internalType": "enum GlobalEnumsAndStructs.ItemID[]"
+          },
+          {
+            "name": "guaranteedItemDropCounts",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "randomItemDrops",
+            "type": "uint8[]",
+            "internalType": "enum GlobalEnumsAndStructs.ItemID[]"
+          },
+          {
+            "name": "randomItemDropChances",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "randomItemDropCounts",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getItemData",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.ItemID"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct GlobalEnumsAndStructs.ItemData",
+        "components": [
+          {
+            "name": "name",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "id",
+            "type": "uint8",
+            "internalType": "enum GlobalEnumsAndStructs.ItemID"
+          },
+          {
+            "name": "purchasePrice",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "isBuyable",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "requiredTierToBuy",
+            "type": "uint8",
+            "internalType": "enum GlobalEnumsAndStructs.AchievementTier"
+          },
+          {
+            "name": "charges",
+            "type": "uint8",
+            "internalType": "uint8"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "initializeDefaultData",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "items",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.ItemID"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "name",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "id",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.ItemID"
+      },
+      {
+        "name": "purchasePrice",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "isBuyable",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "requiredTierToBuy",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.AchievementTier"
+      },
+      {
+        "name": "charges",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "owner",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "registerCrop",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "seedId",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.ItemID"
+      },
+      {
+        "name": "growTimeSeconds",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "baseYield",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "waterNeeded",
+        "type": "uint8",
+        "internalType": "uint8"
+      },
+      {
+        "name": "isRare",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "purchasePriceSeeds",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "requiredTierToBuySeeds",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.AchievementTier"
+      },
+      {
+        "name": "guaranteedItemDrops",
+        "type": "uint8[]",
+        "internalType": "enum GlobalEnumsAndStructs.ItemID[]"
+      },
+      {
+        "name": "guaranteedItemDropCounts",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      },
+      {
+        "name": "randomItemDrops",
+        "type": "uint8[]",
+        "internalType": "enum GlobalEnumsAndStructs.ItemID[]"
+      },
+      {
+        "name": "randomItemDropChances",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      },
+      {
+        "name": "randomItemDropCounts",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "registerItem",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.ItemID"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "purchasePrice",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "isBuyable",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "requiredTierToBuy",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.AchievementTier"
+      },
+      {
+        "name": "charges",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "renounceOwnership",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "transferOwnership",
+    "inputs": [
+      {
+        "name": "newOwner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateCropGrowTime",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      },
+      {
+        "name": "newGrowTime",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateCropSeedPrice",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      },
+      {
+        "name": "newSeedPrice",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateCropYield",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      },
+      {
+        "name": "newYield",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateItemPrice",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.ItemID"
+      },
+      {
+        "name": "newPrice",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "CropRegistered",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CropUpdated",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ItemRegistered",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum GlobalEnumsAndStructs.ItemID"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ItemUpdated",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum GlobalEnumsAndStructs.ItemID"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "OwnershipTransferred",
+    "inputs": [
+      {
+        "name": "previousOwner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "newOwner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  }
+] 

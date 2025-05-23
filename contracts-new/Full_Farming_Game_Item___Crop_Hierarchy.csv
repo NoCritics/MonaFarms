@@ -1,0 +1,37 @@
+Category,Item Description
+Domain Expansion,Farm Tile - can be purchased in the shop for 250 CROPS. Max 24 tiles. Players start with 3. 
+🔹 Base Materials,"CROPS (currency): Earned from harvesting and faucet, used for all purchases"
+🔹 Base Materials,"Water Bucket: 6 units per 50 CROPS, used for watering crops, purchased in shop, no limit on purchases. 1 unit of water bucket for watering one crop."
+🔹 Base Materials,"Fertilizer: 100 CROPS, 4 charges, instantly matures a non-rare crop on usage, without the need to be watered. Depletes a charge on use. Purchasable in shop, once every 24h, then goes on 24h cooldown."
+🔹 Base Materials,"Golden Seeds: 1% drop chance from harvesting any of the rare crops, 100% drop chance from Golden plant (from itself basically), high-yield crop, used in crafting. Cannot be purchased"
+🔹 Base Materials,Crystal Essence: 70% Drop chance from harvesting Crystal Berries.
+🔹 Base Materials,Moonleaf: 50% Drop chance from harvesting Moonflowers.
+🔹 Base Materials,Ancient Apple: 30% Drop chance from harvesting Ancient Grain. Can be self-activated for 24h +50% passive harvest yield boost on all harvests. Or can be sent to another palyer. Another player can activate it for 12h +100% passive harvest yield boost on all harvests. This activation by another player also grants the initial sender the Ancient Apple Seeds.
+🔹 Base Materials,"Rainbow Shard: 10% Drop chance from harvesting Rainbow Fruit, used to craft Rainbow Core"
+🔧 Intermediates & Crafting Components,Ancient Apple Seeds: Obtained when gifted Ancient Apple is activated by another player and sent back to the apple sender player
+🔧 Intermediates & Crafting Components,"Rainbow Core: Crafted from 6 Rainbow Shards, required for Monadium tools"
+🔧 Intermediates & Crafting Components,"Essence Extractor: Bought in shop (150 CROPS), used to process drops"
+🔧 Intermediates & Crafting Components,"Wood: Bought in shop (25 CROPS), used in basic construction/cosmetics"
+🔧 Intermediates & Crafting Components,"Fabric: Bought in shop (40 CROPS), used in some cosmetics"
+🔧 Intermediates & Crafting Components,"Gold Dust: crafted with Golden seeds + essence extractor, used in crafting"
+🔧 Intermediates & Crafting Components,"Time Crystal: 15% Drop chance ONLY from harvesting crystal berries with fertile mesh activated, allows to skip any one cooldown every 24hrs, cannot be used on itself or other time crytals."
+🛠️ Utility Craftables,"Fertile Mesh: Crafted with Gold Dust + 2 Fertilizer + 50 CROPS, Passive harvest yield +100% for 12h (single use)"
+🛠️ Utility Craftables,"Growth Lamp: Crystal Essence + 24 Water + 100 CROPS, Grows (auto-matures with manual trigger by a player) 6 crops instantly (non-rare only) every 24h, basically a forever fertilizer with 6 charges per 24h."
+🛠️ Utility Craftables,"Raincatcher: 2 Moonleaf + rainbow core + 200 CROPS, Waters (watering triggered by player) 24 plants every 24 hours, basically a forever water bucket with 24 charges per 24h."
+🛠️ Utility Craftables,"Lunar Harvester: 2 Moonleaf + Gold Dust + 3 Time Crystals, Auto-harvests only rare crops at perfect timing."
+⚔️ Monadium Toolset (Endgame),"Monadium Sickle: Gold Dust + 2 Crystal Essence + 2 Moonleaf + Ancient Apple Seed + Rainbow Core, enables growing all rare crops simultaneously, completely lifts all the limitations on all rare crops (rainbow fruits too), +5% to all harvests"
+⚔️ Monadium Toolset (Endgame),"Monadium Hoe: Growth Lamp + Essence Extractor + 10 Wood + 10 Fabric + Raibow Core + Time Crystal + Fertile Mesh + 10000crops, auto-waters and auto-harvests 240 non-rare crops into yield per 24h. So when planted, up to 240 non-rare crops per 24h, are simply turned into yield."
+🌾 Basic Crops,"Potato: 3h grow time, costs 10 CROPS, yields 40, net +30"
+🌾 Basic Crops,"Tomato: 2h grow time, costs 30 CROPS, yields 50, net +20"
+🌾 Basic Crops,"Strawberry: 1h grow time, costs 50 CROPS, yields 75, net +25"
+🌿 Standard Expansion Crops,"Corn: 2.5h, 25 CROPS, yields 55, net +30"
+🌿 Standard Expansion Crops,"Carrot: 0.75h, 20 CROPS, yields 35, net +15"
+🌿 Standard Expansion Crops,"Pumpkin: 4h, 35 CROPS, yields 80, net +45, needs 2 waters"
+🌿 Standard Expansion Crops,"Wheat: 0.5h, 15 CROPS (3x5), yields 30, net +15, batch crop, must be planted 3 or more simultaneously. Purchased separately - so 3 purchases must be made, planted only in batches of 3, so Players cannot plant wheat if they have 1 - 2 wheat, also collectively takes 3 tiles, so 3 tiles must be free before planting"
+🌿 Standard Expansion Crops,"Watermelon: 6h, 60 CROPS, yields 130, net +70"
+🌿 Standard Expansion Crops,"Cactus: 2h, 30 CROPS, yields 60, net +30, no water needed"
+🌟 Rare Crops,"Golden Seeds/Plant: 3h, 1% drop-only chance on any rare crop harvest, yields 777, net +777, drops Golden Seeds (100% chance). Cannot be purchased, only dropped. Has 5% chance to additionally drop any (one at random) other rare crop when being harvested itself."
+🌟 Rare Crops,"Crystal Berries: 24h, 200 CROPS, yields 300, +100 net, buffs all adjacent tiles growth 2x speed. Available from the start"
+🌟 Rare Crops,"Moonflowers: 1.5h, 200 CROPS, yields 400, net +200, grows only 2-4AM UTC, drops Moonleaf, can be planted anytime. Available after completing begginer achievement tier"
+🌟 Rare Crops,"Ancient Grain: 48h, 250 CROPS, yields 600, +350 net, needs 4 waters, drops Ancient Apple. Available after completing intermediate achievement tier"
+🌟 Rare Crops,"Rainbow Fruit: 1h, 500 CROPS, yields 888, net +388, Players can only plant it if their farm has 12+ tiles, must be grown alone completely (no other crop is allowed on any tile if its being grown), if not harvested within 5 min of maturing � dies, must be tracked on-chain. +Rainbow shard. Available after completing expert achievement tier"

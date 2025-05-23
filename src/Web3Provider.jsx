@@ -35,7 +35,7 @@ const monadTestnet = defineChain({
 // Use the project ID from your connectkit.key.txt file
 const WALLET_CONNECT_PROJECT_ID = "efc32a8e0fcebd5b40dddc9acf6edc35";
 
-const config = createConfig(
+export const config = createConfig(
   getDefaultConfig({
     // Supporting mainnet, sepolia testnet, and monad testnet
     chains: [mainnet, sepolia, monadTestnet],

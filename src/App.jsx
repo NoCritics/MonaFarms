@@ -8,20 +8,22 @@ import CropsTokenComponent from './components/CropsTokenComponent';
 import FarmManagerWrapper from './components/farm/FarmManagerWrapper';
 import ShopManagerComponent from './components/ShopManagerComponent';
 import LeaderboardComponent from './components/LeaderboardComponent';
+import CraftingManagerComponent from './components/CraftingManagerComponent';
 import Sidebar from './components/Sidebar';
 import DayNightCycle from './components/animations/DayNightCycle';
 import { NotificationProvider, useNotification } from './components/notifications/NotificationSystem';
 import LoadingScreen from './components/ui/LoadingScreen';
 import AchievementNotifications from './components/notifications/AchievementNotifications';
 import { LevelUpAnimation } from './components/animations/LevelUpAnimation';
+import GuideComponent from './components/GuideComponent';
 
 // Context providers
 import { DragDropProvider } from './components/ui/DragDropContext';
 import { ProgressProvider, useProgress } from './context/ProgressContext';
 
 const MainContent = () => {
-    const [activeTab, setActiveTab] = useState('farm');
     const { address, isConnected } = useAccount();
+    const [activeTab, setActiveTab] = useState(isConnected ? 'farm' : 'guide');
     const [isScrolled, setIsScrolled] = useState(false);
     const [sidebarVisible, setSidebarVisible] = useState(false);
     const notification = useNotification();
@@ -72,7 +74,7 @@ const MainContent = () => {
     // Check for hash in URL on load
     useEffect(() => {
         const hash = window.location.hash.replace('#', '');
-        if (hash && ['farm', 'shop', 'token', 'player', 'leaderboard'].includes(hash)) {
+        if (hash && ['farm', 'shop', 'crafting', 'token', 'player', 'leaderboard', 'guide'].includes(hash)) {
             setActiveTab(hash);
         }
     }, []);
@@ -139,7 +141,7 @@ const MainContent = () => {
                             )}
                         </div>
 
-                        {isConnected && (
+                        {isConnected ? (
                             <>
                                 <div className="nav-tabs">
                                     <div
@@ -153,6 +155,12 @@ const MainContent = () => {
                                         onClick={() => handleTabChange('shop')}
                                     >
                                         <span className="nav-tab-icon">🛒</span> Shop
+                                    </div>
+                                    <div
+                                        className={`nav-tab ${activeTab === 'crafting' ? 'active' : ''}`}
+                                        onClick={() => handleTabChange('crafting')}
+                                    >
+                                        <span className="nav-tab-icon">⚒️</span> Crafting
                                     </div>
                                     <div
                                         className={`nav-tab ${activeTab === 'token' ? 'active' : ''}`}
@@ -172,6 +180,12 @@ const MainContent = () => {
                                     >
                                         <span className="nav-tab-icon">🏆</span> Leaderboard
                                     </div>
+                                    <div
+                                        className={`nav-tab ${activeTab === 'guide' ? 'active' : ''}`}
+                                        onClick={() => handleTabChange('guide')}
+                                    >
+                                        <span className="nav-tab-icon">📖</span> Guide
+                                    </div>
                                 </div>
 
                                 <div className="tab-content section-transition-enter-active">
@@ -179,8 +193,27 @@ const MainContent = () => {
                                     {activeTab === 'token' && <CropsTokenComponent />}
                                     {activeTab === 'farm' && <FarmManagerWrapper />}
                                     {activeTab === 'shop' && <ShopManagerComponent />}
+                                    {activeTab === 'crafting' && <CraftingManagerComponent />}
                                     {activeTab === 'leaderboard' && <LeaderboardComponent />}
+                                    {activeTab === 'guide' && <GuideComponent />}
                                 </div>
+                            </>
+                        ) : (
+                            <>
+                                <div className="nav-tabs">
+                                    <div
+                                        className={`nav-tab ${activeTab === 'guide' ? 'active' : ''}`}
+                                        onClick={() => handleTabChange('guide')}
+                                    >
+                                        <span className="nav-tab-icon">📖</span> How to Play
+                                    </div>
+                                </div>
+                                
+                                {activeTab === 'guide' && (
+                                    <div className="tab-content section-transition-enter-active">
+                                        <GuideComponent />
+                                    </div>
+                                )}
                             </>
                         )}
                         
@@ -188,7 +221,7 @@ const MainContent = () => {
                             <p className="mb-xs">MonaFarms - Blockchain farming simulation game on Monad testnet</p>
                             <div className="text-xs flex justify-center gap-md">
                                 <a href="#" className="footer-link">About</a>
-                                <a href="#" className="footer-link">How to Play</a>
+                                <a href="#guide" className="footer-link" onClick={() => handleTabChange('guide')}>How to Play</a>
                                 <a href="#" className="footer-link">Monad</a>
                             </div>
                         </footer>

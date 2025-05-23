@@ -1,3 +1,24 @@
+/* Farm-themed background pattern */
+body {
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(139, 195, 74, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 193, 7, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(76, 175, 80, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
 /* Common Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -23,6 +44,24 @@
 @keyframes rotate {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+/* Farm-themed animations */
+@keyframes growPlant {
+  0% { transform: scale(0) translateY(20px); opacity: 0; }
+  50% { transform: scale(1.1) translateY(-5px); }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes leafSway {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+@keyframes harvestBounce {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.1) rotate(-5deg); }
+  75% { transform: scale(1.1) rotate(5deg); }
 }
 
 /* Loading Spinner */
@@ -94,6 +133,28 @@
   transform: translateY(-2px);
 }
 
+/* Farm-themed button enhancement */
+.btn.farm-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn.farm-btn::after {
+  content: '🌱';
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.btn.farm-btn:hover::after {
+  right: 10px;
+  opacity: 0.3;
+}
+
 .btn:active:not(:disabled) {
   transform: translateY(1px);
 }
@@ -115,11 +176,32 @@
 }
 
 .btn-success {
-  background-color: #4CAF50;
+  background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-success::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-success:hover:not(:disabled)::before {
+  opacity: 1;
 }
 
 .btn-success:hover:not(:disabled) {
-  background-color: #3D8B40;
+  background: linear-gradient(135deg, #66BB6A 0%, #81C784 100%);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.4);
 }
 
 .btn-error {
@@ -131,11 +213,13 @@
 }
 
 .btn-warning {
-  background-color: #F7B538;
+  background: linear-gradient(135deg, #FFB74D 0%, #FFA726 100%);
+  box-shadow: 0 2px 4px rgba(255, 152, 0, 0.3);
 }
 
 .btn-warning:hover:not(:disabled) {
-  background-color: #E59400;
+  background: linear-gradient(135deg, #FFA726 0%, #FF9800 100%);
+  box-shadow: 0 4px 8px rgba(255, 152, 0, 0.4);
 }
 
 /* Card Styles */
@@ -144,6 +228,26 @@
   border-radius: 12px;
   padding: 1.25rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Farm-themed card variation */
+.card.farm-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 248, 248, 0.95) 100%);
+  border: 2px solid rgba(139, 195, 74, 0.2);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.15);
+}
+
+.card.farm-card::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, rgba(255, 235, 59, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
 }
 
 .card-header {
@@ -172,15 +276,16 @@
   transform: translateX(-50%);
   min-width: 200px;
   padding: 0.75rem;
-  background-color: #1E1633;
+  background: linear-gradient(135deg, #2E7D32 0%, #388E3C 100%);
   color: white;
   text-align: center;
   border-radius: 8px;
   z-index: 10;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .tooltip-content::after {
@@ -191,7 +296,7 @@
   margin-left: -8px;
   border-width: 8px;
   border-style: solid;
-  border-color: #1E1633 transparent transparent transparent;
+  border-color: #2E7D32 transparent transparent transparent;
 }
 
 .tooltip:hover .tooltip-content {
@@ -218,7 +323,8 @@
 }
 
 .badge-success {
-  background-color: #4CAF50;
+  background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
 }
 
 .badge-error {
@@ -226,7 +332,8 @@
 }
 
 .badge-warning {
-  background-color: #F7B538;
+  background: linear-gradient(135deg, #FFB74D 0%, #FFA726 100%);
+  box-shadow: 0 2px 4px rgba(255, 152, 0, 0.2);
 }
 
 /* Utility Classes */
@@ -252,6 +359,7 @@
 
 .text-success {
   color: #4CAF50;
+  text-shadow: 0 1px 2px rgba(76, 175, 80, 0.2);
 }
 
 .text-error {
@@ -276,6 +384,18 @@
 
 .animate-pulse {
   animation: pulse 2s infinite;
+}
+
+.animate-grow {
+  animation: growPlant 0.6s ease-out;
+}
+
+.animate-sway {
+  animation: leafSway 3s ease-in-out infinite;
+}
+
+.animate-harvest {
+  animation: harvestBounce 0.5s ease-out;
 }
 
 .w-full {

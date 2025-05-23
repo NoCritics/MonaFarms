@@ -1,0 +1,835 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "initialOwner",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_playerRegistryAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_itemRegistryAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_timeOracleAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_economyContractAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_playerLeaderboardAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_farmEnhancementContractAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_cropsTokenAddress",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "cropIdRequiresWater",
+    "inputs": [
+      {
+        "name": "cropId",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "pure"
+  },
+  {
+    "type": "function",
+    "name": "economyContract",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract EconomyContract"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "farmEnhancementContract",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract FarmEnhancementContract"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "fertilizeCrop",
+    "inputs": [
+      {
+        "name": "tileIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "getCropDataForSeed",
+    "inputs": [
+      {
+        "name": "seedId",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.ItemID"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct GlobalEnumsAndStructs.CropData",
+        "components": [
+          {
+            "name": "id",
+            "type": "uint8",
+            "internalType": "enum GlobalEnumsAndStructs.CropID"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "growTimeSeconds",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "waterNeeded",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "baseYield",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "seedId",
+            "type": "uint8",
+            "internalType": "enum GlobalEnumsAndStructs.ItemID"
+          },
+          {
+            "name": "isRare",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "guaranteedItemDrops",
+            "type": "uint8[]",
+            "internalType": "enum GlobalEnumsAndStructs.ItemID[]"
+          },
+          {
+            "name": "guaranteedItemDropCounts",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "randomItemDrops",
+            "type": "uint8[]",
+            "internalType": "enum GlobalEnumsAndStructs.ItemID[]"
+          },
+          {
+            "name": "randomItemDropCounts",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "randomItemDropChances",
+            "type": "uint8[]",
+            "internalType": "uint8[]"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getFarmTile",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "tileIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct GlobalEnumsAndStructs.FarmTile",
+        "components": [
+          {
+            "name": "plantedCrop",
+            "type": "uint8",
+            "internalType": "enum GlobalEnumsAndStructs.CropID"
+          },
+          {
+            "name": "plantedAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "waterCount",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "lastWateredAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "isFertilized",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "maturityTime",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "isLocked",
+            "type": "bool",
+            "internalType": "bool"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getPlayerPlantableSeeds",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple[]",
+        "internalType": "struct FarmManager.PlantableSeedInfo[]",
+        "components": [
+          {
+            "name": "cropId",
+            "type": "uint8",
+            "internalType": "enum GlobalEnumsAndStructs.CropID"
+          },
+          {
+            "name": "cropName",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "seedId",
+            "type": "uint8",
+            "internalType": "enum GlobalEnumsAndStructs.ItemID"
+          },
+          {
+            "name": "seedName",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "amountOwned",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "harvestCrop",
+    "inputs": [
+      {
+        "name": "tileIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "isCropMature",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "tileIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "itemRegistry",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract ItemRegistry"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "lockTile",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "tileIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "lockUntilTimestamp",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "owner",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "plantCrop",
+    "inputs": [
+      {
+        "name": "tileIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "seedItemId",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.ItemID"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "playerFarmTiles",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "plantedCrop",
+        "type": "uint8",
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      },
+      {
+        "name": "plantedAt",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "waterCount",
+        "type": "uint8",
+        "internalType": "uint8"
+      },
+      {
+        "name": "lastWateredAt",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "isFertilized",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "maturityTime",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "isLocked",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "playerLeaderboard",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract PlayerLeaderboard"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "playerRegistry",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract PlayerRegistryInventory"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "renounceOwnership",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setExternalContracts",
+    "inputs": [
+      {
+        "name": "_playerRegistryAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_itemRegistryAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_timeOracleAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_economyContractAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_playerLeaderboardAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_farmEnhancementContractAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_cropsTokenAddress",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "timeOracle",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract TimeOracle"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "transferOwnership",
+    "inputs": [
+      {
+        "name": "newOwner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "unlockTileAndClear",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "tileIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "waterCrop",
+    "inputs": [
+      {
+        "name": "tileIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "cropsToken",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract CROPS_Token"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "CropFertilized",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "tileIndex",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "cropId",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CropHarvested",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "tileIndex",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "cropId",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      },
+      {
+        "name": "yieldCrops",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "itemDrops",
+        "type": "uint8[]",
+        "indexed": false,
+        "internalType": "enum GlobalEnumsAndStructs.ItemID[]"
+      },
+      {
+        "name": "itemDropCounts",
+        "type": "uint256[]",
+        "indexed": false,
+        "internalType": "uint256[]"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CropPlanted",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "tileIndex",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "cropId",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      },
+      {
+        "name": "plantedAt",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CropWatered",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "tileIndex",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "cropId",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "OwnershipTransferred",
+    "inputs": [
+      {
+        "name": "previousOwner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "newOwner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RainbowFruitDied",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "tileIndex",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TileLocked",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "tileIndex",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "lockUntil",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TileUnlocked",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "tileIndex",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "YieldBoostApplied",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "cropId",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum GlobalEnumsAndStructs.CropID"
+      },
+      {
+        "name": "boostType",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "percentageBoost",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  }
+] 

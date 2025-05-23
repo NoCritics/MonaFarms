@@ -1,0 +1,138 @@
+Plan for Integrating New Contracts and Overhauling UI
+Phase 1: Backend Integration - Smart Contract Setup
+Replace ABIs:
+Remove all ABI files from contracts/abis/.
+Copy all new ABI files from contracts-new/abis/ to src/abis/ (create this new directory). This keeps frontend-related artifacts within the src folder.
+Update all import paths in the frontend components (e.g., FarmManagerWrapper.jsx, and other components that will be created/updated for ShopManager, PlayerRegistryInventory, etc.) to point to the new ABI locations in src/abis/. For example, change ../../../contracts/abis/farmmanager-abi.json to ../../abis/FarmManager.abi.json.
+Update Contract Addresses:
+The new contracts are already deployed and verified. Obtain the new deployed addresses for all contracts: FarmManager, ShopManager, PlayerRegistryInventory, FarmEnhancementContract, CraftingManager, EconomyContract, PlayerLeaderboard, ItemRegistry, TimeOracle, and CROPS_Token.
+Create a central configuration file for contract addresses, e.g., src/constants/contractAddresses.js.
+Apply
+Update components to import addresses from this central file instead of hardcoding them (like in FarmManagerWrapper.jsx).
+Phase 2: Frontend - Core Logic and Component Refactoring
+PlayerRegistryInventory Integration (PlayerRegistryComponent.jsx):
+The current PlayerRegistryComponent.jsx likely interacts with the old PlayerRegistry.sol.
+Refactor PlayerRegistryComponent.jsx:
+Update contract interactions to use the new PlayerRegistryInventory.abi.json and its address.
+Implement UI for player registration (registerPlayer(string nickname)).
+Display player profile information fetched using getPlayerProfile(address player). This includes nickname, farm tiles count, achievement tier, upgrade levels, and owned tools/emblems.
+Display player inventory using getPlayerFullInventory(address player).
+Implement UI for consumeAncientApple and sendAncientApple.
+New Functionality (Consider for UI):
+Displaying tool usage cooldowns/counts (getToolUsesToday).
+ItemRegistry and TimeOracle (Utility Services):
+These contracts primarily provide data and utility functions. It might not be necessary to create dedicated top-level components for them in App.jsx.
+Create service modules in src/services/ (e.g., itemRegistryService.js, timeOracleService.js) to encapsulate read functions for these contracts.
+itemRegistryService.js: Functions to fetch ItemData (getItemData(ItemID id)), CropData (getCropData(CropID id)), and lists of all items/crops (getAllItemIDs, getAllCropIDs). This will be used by FarmManagerWrapper, ShopManagerComponent, CraftingManagerComponent.
+timeOracleService.js: Functions to get getCurrentTimestamp(), check cooldowns (isCooldownActive, getTimeToCooldownEnd), and check isMoonflowerHarvestWindow(). This will be used by various components that involve time-sensitive actions or display cooldowns.
+FarmManager Integration (FarmManagerWrapper.jsx):
+Update Contract Calls:
+Replace old FarmManager calls with new ones:
+Planting: plantCrop(uint256 tileIndex, ItemID seedItemId)
+Watering: waterCrop(uint256 tileIndex)
+Fertilizing: fertilizeCrop(uint256 tileIndex) (Note: new contract logic makes crop instantly mature).
+Harvesting: harvestCrop(uint256 tileIndex)
+Fetch farm tile data using getFarmTile(address player, uint256 tileIndex). The FarmTile struct is different, so update UI accordingly.
+Fetch plantable seeds for the UI using getPlayerPlantableSeeds(address player). This will replace the current hardcoded crop types and fetching individual seed balances.
+UI Updates:
+Rework the seed selection UI to use data from getPlayerPlantableSeeds.
+Display detailed FarmTile information (planted crop, planted time, water count, fertilized status, maturity time, locked status).
+Update growth progress calculation based on maturityTime from FarmTile and TimeOracle.getCurrentTimestamp().
+Handle new crop types and their specific behaviors (e.g., Rainbow Fruit restrictions, Moonflower harvest window).
+Integrate UI for FarmEnhancementContract features if they are initiated from the farm view (e.g., displaying if Lunar Harvester can be used on a tile, though the actual initiation might be in a separate UI section or via FarmEnhancementComponent).
+ShopManager Integration (ShopManagerComponent.jsx):
+The current ShopManagerComponent.jsx needs significant updates.
+Refactor ShopManagerComponent.jsx:
+Update contract interactions to use ShopManager.abi.json and its address.
+Fetch buyable items and their prices. The ItemRegistry.initializeDefaultData() shows many items are registered with isBuyable and purchasePrice. The shop should dynamically display these based on data from ItemRegistry (via itemRegistryService.js) and PlayerRegistryInventory (for tier requirements).
+Implement purchaseItem(ItemID itemId, uint256 quantity). Handle special logic for Water Buckets (bonus units) and Fertilizer (cooldown, pack of 4) as defined in the new ShopManager.sol.
+Implement purchaseFarmTile().
+UI Updates:
+Display items dynamically with their names, prices, and tier requirements.
+Clearly show player's CROPS balance (fetched via PlayerRegistryInventory.getPlayerInventoryItemBalance).
+Show cooldown for fertilizer purchase using TimeOracle.
+CROPS_Token Integration (CropsTokenComponent.jsx):
+This component likely shows token balance and perhaps transfer functionality (though the old contract might not have had direct transfers enabled for users).
+Refactor CropsTokenComponent.jsx:
+Update to use CROPS_Token.abi.json and its address.
+Display CROPS balance. The primary source of truth for a player's usable CROPS balance will be PlayerRegistryInventory.getPlayerInventoryItemBalance(player, ItemID.CROPS_CURRENCY). The ERC20 balance from CROPS_Token.balanceOf(player) should match this if all CROPS are minted to the player and then "deposited" into the game's inventory system. Clarify if the UI should show the on-chain ERC20 balance or the in-game inventory balance. For game actions, the in-game inventory balance is what matters.
+The new EconomyContract.sol has claimDailyFaucet(). Add UI for this in CropsTokenComponent.jsx or a dedicated section. Show cooldown status from TimeOracle.
+The old CropsToken.sol might have had approve and transfer for user interactions. The new CROPS_Token.sol has mint and burn as onlyOwner. User-to-user transfers of CROPS are not directly in the token contract but could be a higher-level feature if desired (e.g., a separate contract or off-chain system, though not present in the provided new contracts). The PlayerRegistryInventory has sendAncientApple, but not generic CROPS transfer. For now, focus on displaying balance and faucet.
+Leaderboard Integration (LeaderboardComponent.jsx):
+Refactor LeaderboardComponent.jsx:
+Update contract interactions to use PlayerLeaderboard.abi.json and its address.
+Fetch and display player points using getPlayerPoints(address player).
+Fetch and display player tier using getCurrentPlayerTier(address player).
+The current UI likely fetches a list of players for the leaderboard. The new PlayerLeaderboard.sol doesn't have a direct function to get top N players. This will require an off-chain solution or a new contract function.
+Option 1 (Off-chain): Index PointsAwarded events and maintain the leaderboard off-chain, then display via a traditional API.
+Option 2 (On-chain - requires contract modification): Add a view function to PlayerLeaderboard.sol to return sorted top players (can be gas-intensive for many players).
+Option 3 (Simplified On-chain for now): Display the current player's points and rank relative to statically defined tier thresholds. For a full leaderboard, an off-chain solution is more scalable. For the MVP integration, focus on displaying the current player's status.
+New CraftingManagerComponent.jsx:
+Create a new component src/components/CraftingManagerComponent.jsx.
+Add a "Crafting" tab to App.jsx and render this component.
+Functionality:
+Fetch available recipes using getRecipe(ItemID targetItemId) from CraftingManager.sol (or a function to list all recipes, which might need to be added to the contract or managed by iterating known craftable ItemIDs on the frontend). The current CraftingManager.sol initializes recipes in the constructor; the frontend will need to know which ItemIDs are craftable to query their recipes.
+Display recipe details: required components, blueprint (if any), CROPS cost.
+Allow players to craftItem(ItemID targetItemId).
+Check player inventory for components and blueprints using PlayerRegistryInventory.
+Display appropriate feedback (success, insufficient materials, missing blueprint).
+New FarmEnhancementComponent.jsx (Optional, or integrate into Profile/Shop):
+Consider a dedicated UI for viewing farm enhancement status and perhaps interacting with tools if not covered elsewhere.
+Functionality:
+Display current levels of Irrigation, Greenhouse, Seed Saver, Rich Soil (from PlayerRegistryInventory.getPlayerProfile).
+Display bonuses provided by these upgrades (using getter functions in FarmEnhancementContract).
+Display ownership of Lunar Harvester, Monadium Hoe, Monadium Sickle.
+If initiateLunarHarvest and useMonadiumHoe are not fully integrated into FarmManagerWrapper, provide UI for them here, including displaying daily usage limits from PlayerRegistryInventory.getToolUsesToday and FarmEnhancementContract constants.
+UI for claimLunarHarvest.
+Phase 3: UI Overhaul and Enhancements
+General UI/UX Improvements:
+Visual Refresh: Update the overall theme, styling, and layout to be more modern and engaging.
+Responsiveness: Ensure the UI is fully responsive across different screen sizes.
+Feedback and Notifications: Enhance user feedback for all actions (loading states, success/error messages, transaction confirmations). The existing NotificationSystem can be leveraged and expanded.
+Data Display: Present data from contracts in a clear, user-friendly manner. Use icons, progress bars, and visual cues. The current FarmManagerWrapper.jsx has some good examples of this (growth progress bars, inventory display with icons). Extend this to all new features.
+Empty States and Loading: Improve handling of empty states (e.g., no items in inventory, no crops planted) and loading states while fetching data.
+Specific UI Enhancements based on New Contracts:
+Player Profile (PlayerRegistryComponent):
+Visually represent achievement tiers (e.g., with badges).
+Display acquired emblems (hasGoldenEmblem, hasPlatinumEmblem).
+Show owned tools and their usage/cooldowns.
+Display Ancient Apple boost status and timer.
+Farm (FarmManagerWrapper):
+Visually distinguish different crops on the farm grid.
+Clearer indication of tile status (empty, planted, watered, ready, locked).
+Integrate display of FarmEnhancementContract bonuses that affect farming (e.g., greenhouse boost affecting growth time, seed saver chance).
+Shop (ShopManagerComponent):
+Better categorization of items.
+Visual indication of tier requirements.
+Clear display of special item properties (e.g., Water Bucket gives X units, Fertilizer cooldown).
+Crafting (CraftingManagerComponent):
+Intuitive UI for selecting recipes and viewing required materials.
+Visual feedback on whether the player can afford/craft an item.
+Achievements (AchievementNotifications and a dedicated view):
+The current AchievementManager.js is client-side. The new PlayerLeaderboard.sol and PlayerRegistryInventory.sol handle tiers and some rewards (emblems, blueprints) on-chain.
+Decide on the source of truth for achievements. If achieve.txt represents a broader set of achievements than just tier progression:
+Keep AchievementManager.js for UI display of these granular achievements.
+The on-chain PlayerLeaderboard.awardAchievementPoints can be called by an admin/backend service when off-chain conditions for these granular achievements are met, to grant points that contribute to the on-chain tier.
+Display on-chain awarded emblems and blueprints in the player profile.
+The LevelUpAnimation can be triggered when PlayerRegistryInventory emits PlayerTierUpdated.
+Phase 4: Testing and Refinement
+Thorough Testing:
+Test all contract interactions on the Monad testnet.
+Verify data consistency between contract state and UI display.
+Test all game mechanics: planting, harvesting, shopping, crafting, tier progression, upgrades, special tools.
+Test wallet connection and transaction flows.
+Performance Optimization:
+Optimize frontend rendering performance.
+Minimize unnecessary contract calls; use caching or context API where appropriate for frequently read static data (e.g., item/crop definitions from ItemRegistry once fetched).
+Code Cleanup and Documentation:
+Remove old contract files (contracts/ directory) and unused ABI files.
+Add comments and documentation for new components and services.
+Key Considerations During Implementation:
+State Management: The current app uses useState and useEffect extensively. For more complex global state (e.g., player profile, inventory, CROPS balance, item/crop definitions from ItemRegistry), consider leveraging the existing ProgressProvider or introducing a more robust state management solution like Zustand or Redux Toolkit if complexity grows significantly.
+Error Handling: Implement comprehensive error handling for contract interactions and display user-friendly error messages.
+Transaction UX: Provide clear feedback during transaction submission, confirmation, and failure.
+Modularity: Keep components and services modular and focused on specific functionalities.
+Data Fetching Strategy:
+For data that changes frequently (e.g., FarmTile info, inventory balances after an action), refetch as needed (the current refetchInventory, refetchTileInfo pattern is good).
+For data that is mostly static once fetched (e.g., ItemData, CropData from ItemRegistry), fetch once and store in context or a service-level cache to avoid repeated calls. The new ItemRegistry.sol has getAllItemIDs and getAllCropIDs which can be used to fetch all definitions initially.
+Security: While the contracts are deployed, ensure frontend interactions are secure (e.g., proper input validation, though most validation is on-chain).
