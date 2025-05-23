@@ -144,7 +144,7 @@ const LoadingScreen = ({ isLoading, minDisplayTime = 1500 }) => {
               zIndex: 3,
               animation: 'shimmer 1.5s infinite linear'
             }}></div>
-          ></div>
+          </div>
         </div>
         
         <div className="loading-tip">
