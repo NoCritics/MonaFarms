@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import { readContract } from 'wagmi/actions';
 import FarmManagerABI from '../../abis/FarmManager.abi.json';
 import PlayerRegistryInventoryABI from '../../abis/PlayerRegistryInventory.abi.json';
 import { CONTRACT_ADDRESSES } from '../../constants/contractAddresses';
@@ -139,8 +140,18 @@ const FarmManagerWrapper = () => {
         cacheTime: 30000, // 30 seconds cache
     });
 
+    // Get player's farm tiles count directly as a fallback
+    const { data: directTileCount, refetch: refetchDirectTileCount, error: directTileCountError } = useReadContract({
+        address: CONTRACT_ADDRESSES.PlayerRegistryInventory,
+        abi: PlayerRegistryInventoryABI,
+        functionName: 'getPlayerFarmTilesCount',
+        args: [address],
+        enabled: !!address,
+        cacheTime: 30000, // 30 seconds cache
+    });
+
     // Get player's farm tiles count
-    const { data: playerProfile, refetch: refetchProfile } = useReadContract({
+    const { data: playerProfile, refetch: refetchProfile, error: playerProfileError } = useReadContract({
         address: CONTRACT_ADDRESSES.PlayerRegistryInventory,
         abi: PlayerRegistryInventoryABI,
         functionName: 'getPlayerProfile',
@@ -169,15 +180,10 @@ const FarmManagerWrapper = () => {
         cacheTime: 30000, // 30 seconds cache
     });
 
-    // Get farm tiles data with multicall
-    const { data: allTilesData, refetch: refetchAllTiles } = useReadContract({
-        address: CONTRACT_ADDRESSES.FarmManager,
-        abi: FarmManagerABI,
-        functionName: 'getPlayerFarmTiles',
-        args: [address],
-        enabled: !!address && tileCount > 0,
-        cacheTime: 30000, // 30 seconds cache
-    });
+    // State for tracking individual tile data fetching
+    const [individualTilesData, setIndividualTilesData] = useState([]);
+    const [lastTilesFetchTime, setLastTilesFetchTime] = useState(0);
+    const [isFetchingTiles, setIsFetchingTiles] = useState(false);
 
     // Update current time less frequently (30 seconds) to reduce RPC calls
     useEffect(() => {
@@ -222,16 +228,63 @@ const FarmManagerWrapper = () => {
         fetchAllCropData();
     }, [address]);
 
-    // Get all farm tiles
+    // Fetch individual tiles from the contract
+    const fetchIndividualTiles = async () => {
+        if (!address || tileCount <= 0 || isFetchingTiles) return;
+        
+        // Limit fetching to every 10 seconds to prevent excessive RPC calls
+        const now = Date.now();
+        if (now - lastTilesFetchTime < 10000) return;
+        
+        setIsFetchingTiles(true);
+        setLastTilesFetchTime(now);
+        
+        try {
+            const promises = [];
+            
+            // Create promises for all tiles using readContract from wagmi/actions
+            for (let i = 0; i < tileCount; i++) {
+                promises.push(
+                    readContract({
+                        address: CONTRACT_ADDRESSES.FarmManager,
+                        abi: FarmManagerABI,
+                        functionName: 'getFarmTile',
+                        args: [address, i]
+                    }).catch(error => {
+                        console.error(`Error fetching tile ${i}:`, error);
+                        // Return default empty tile data on error
+                        return {
+                            plantedCrop: 0,
+                            plantedAt: 0,
+                            waterCount: 0,
+                            lastWateredAt: 0,
+                            isFertilized: false,
+                            maturityTime: 0,
+                            isLocked: false
+                        };
+                    })
+                );
+            }
+            
+            const tilesData = await Promise.all(promises);
+            setIndividualTilesData(tilesData);
+        } catch (error) {
+            console.error("Error fetching individual tiles:", error);
+        } finally {
+            setIsFetchingTiles(false);
+        }
+    };
+
+    // Get all farm tiles - updated to use individual tile data
     const fetchAllFarmTiles = async () => {
         if (!address || tileCount <= 0) return;
         
         try {
             let tiles = [];
             
-            // Use allTilesData if available (from contract multicall)
-            if (allTilesData && allTilesData.length > 0) {
-                tiles = allTilesData.map((tileData, i) => {
+            // Use individualTilesData if available
+            if (individualTilesData && individualTilesData.length === tileCount) {
+                tiles = individualTilesData.map((tileData, i) => {
                     // Process tile data from blockchain
                     const plantedAt = Number(tileData.plantedAt || 0);
                     const maturityTime = Number(tileData.maturityTime || 0);
@@ -251,7 +304,7 @@ const FarmManagerWrapper = () => {
                     };
                 });
             } 
-            // Fall back to individual tile data when available
+            // Fall back to selected tile data and cached data
             else {
                 for (let i = 0; i < tileCount; i++) {
                     // If current tile, use the already fetched data
@@ -271,15 +324,16 @@ const FarmManagerWrapper = () => {
                         });
                     } 
                     // For other tiles, try to preserve existing data if available
-                    else if (farmTiles[i] && farmTiles[i].plantedAt > 0) {
+                    else if (farmTiles[i]) {
                         // Update time-dependent properties while keeping core data
-                        const isReady = farmTiles[i].maturityTime <= currentTime && farmTiles[i].plantedAt > 0;
+                        const existingTile = farmTiles[i];
+                        const isReady = existingTile.maturityTime <= currentTime && existingTile.plantedAt > 0;
                         tiles.push({
-                            ...farmTiles[i],
+                            ...existingTile,
                             isReady
                         });
                     }
-                    // Otherwise use placeholder
+                    // Otherwise create placeholder tile
                     else {
                         tiles.push({
                             index: i,
@@ -303,26 +357,54 @@ const FarmManagerWrapper = () => {
         }
     };
 
+    // Trigger individual tiles fetch when tile count changes
+    useEffect(() => {
+        if (tileCount > 0) {
+            fetchIndividualTiles();
+        }
+    }, [tileCount, address]);
+
     // Update farm tiles with optimized dependencies
     const farmTilesUpdateRef = useRef(0);
     useEffect(() => {
-        // Only update every 5 seconds maximum unless allTilesData changes
+        // Only update every 5 seconds maximum unless individualTilesData changes
         const now = Date.now();
         if (
             tileCount > 0 && 
             (
-                allTilesData || // Always update if allTilesData changes
+                individualTilesData.length > 0 || // Always update if individualTilesData changes
                 now - farmTilesUpdateRef.current > 5000 // Otherwise limit to every 5 seconds
             )
         ) {
             farmTilesUpdateRef.current = now;
             fetchAllFarmTiles();
         }
-    }, [tileCount, allTilesData, currentTime, selectedTile, tileInfoData]);
+    }, [tileCount, individualTilesData, currentTime, selectedTile, tileInfoData]);
     
     useEffect(() => {
-        if (playerProfile) {
+        console.log('=== DEBUGGING TILE COUNT ===');
+        console.log('playerProfile:', playerProfile);
+        console.log('playerProfileError:', playerProfileError);
+        console.log('directTileCount:', directTileCount);
+        console.log('directTileCountError:', directTileCountError);
+        console.log('address:', address);
+        console.log('CONTRACT_ADDRESSES.PlayerRegistryInventory:', CONTRACT_ADDRESSES.PlayerRegistryInventory);
+        
+        // Try to get tile count from playerProfile first
+        if (playerProfile && playerProfile.farmTilesCount !== undefined) {
+            console.log('playerProfile.farmTilesCount:', playerProfile.farmTilesCount);
+            console.log('Setting tileCount to:', Number(playerProfile.farmTilesCount));
             setTileCount(Number(playerProfile.farmTilesCount));
+        }
+        // Fallback to direct tile count if playerProfile fails
+        else if (directTileCount !== undefined) {
+            console.log('Using directTileCount fallback:', directTileCount);
+            console.log('Setting tileCount to:', Number(directTileCount));
+            setTileCount(Number(directTileCount));
+        } else {
+            console.log('Both playerProfile and directTileCount are undefined');
+            if (playerProfileError) console.log('playerProfileError:', playerProfileError);
+            if (directTileCountError) console.log('directTileCountError:', directTileCountError);
         }
 
         if (inventoryData) {
@@ -396,7 +478,7 @@ const FarmManagerWrapper = () => {
                 setGrowthPercentage(0);
             }
         }
-    }, [inventoryData, playerProfile, plantableSeedsData, tileInfoData, currentTime]);
+    }, [inventoryData, playerProfile, playerProfileError, directTileCount, directTileCountError, plantableSeedsData, tileInfoData, currentTime]);
 
     // Also update the Moonflower harvest window status every minute if we're viewing Moonflowers
     useEffect(() => {
@@ -423,10 +505,10 @@ const FarmManagerWrapper = () => {
 
     const { writeContractAsync: writeContract } = useWriteContract();
 
-    // Modified to use all tiles data properly
+    // Modified to use individual tiles data properly
     const isRareCropAlreadyPlanted = (cropId) => {
-        // If we don't have full data yet, use farmTiles as fallback
-        const tilesToCheck = allTilesData || farmTiles;
+        // Use farmTiles which now contains the proper individual tile data
+        const tilesToCheck = farmTiles;
         
         if (!tilesToCheck || tilesToCheck.length === 0) return false;
         
@@ -465,7 +547,8 @@ const FarmManagerWrapper = () => {
     const refetchDataAfterAction = () => {
         setTimeout(() => refetchTileInfo(), 1000);
         setTimeout(() => refetchInventory(), 2000);
-        setTimeout(() => refetchAllTiles(), 3000);
+        setTimeout(() => refetchDirectTileCount(), 2500); // Add direct tile count refetch
+        setTimeout(() => fetchIndividualTiles(), 3000); // Use fetchIndividualTiles instead
         setTimeout(() => refetchPlantableSeeds(), 4000);
     };
 
